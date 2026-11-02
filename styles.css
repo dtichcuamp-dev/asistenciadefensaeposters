@@ -1,0 +1,123 @@
+/* ==========================================================================
+   ESTILOS PERSONALIZADOS - XIV CONGRESO PINEDA (HCUAMP)
+   Paleta Institucional:
+   - Azul Quirúrgico: #0070BA
+   - Azul Profundo: #004C87
+   - Turquesa Médico: #00A8B5
+   - Dark Teal: #008C99
+   - Alerta / Acento: #E11D48
+   - Presencia Médica: #059669
+   ========================================================================== */
+
+:root {
+  --color-blue-surgical: #0070BA;
+  --color-blue-deep: #004C87;
+  --color-turquoise: #00A8B5;
+  --color-teal: #008C99;
+  --color-accent-rose: #E11D48;
+  --color-success: #059669;
+  --color-amber: #D97706;
+}
+
+/* Tipografía base fluida y suave */
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #F8FAFC;
+  color: #1E293B;
+  min-height: 100vh;
+}
+
+/* Safe areas para muesca/notch de smartphones */
+.safe-bottom {
+  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+.safe-navbar-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Glassmorphism y sombras suaves de nivel médico */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glass-header {
+  background: rgba(0, 76, 135, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.glass-bottom-bar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 -8px 24px -4px rgba(0, 76, 135, 0.08);
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Scrollbars personalizados y elegantes */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Animaciones sutiles para feedback visual */
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.pulse-live {
+  animation: pulseSubtle 3s infinite ease-in-out;
+}
+
+/* Transición suave entre pestañas */
+.tab-content {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.tab-content.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Estilos de impresión para la Credencial de Asistencia */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  
+  header, nav, .glass-bottom-bar, .no-print, #notification-container {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+
+  .print-card {
+    border: 2px solid #004C87 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}

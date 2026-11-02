@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>XIV Congreso Pineda | Control de Asistencia E-Pósters HCUAMP</title>
+  
+  <!-- Favicons y PWA Meta Tags -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#004C87">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Congreso Pineda">
+
+  <!-- Fuentes e Iconos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pineda: {
+              surgical: '#0070BA',
+              deep: '#004C87',
+              navy: '#002D54',
+              turquoise: '#00A8B5',
+              teal: '#008C99',
+              lightTeal: '#E0F7FA',
+              rose: '#E11D48',
+              emerald: '#059669',
+              amber: '#D97706'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Hojas de Estilos Personalizadas -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-pineda-turquoise selection:text-white">
+
+  <!-- ==================== HEADER INSTITUCIONAL ==================== -->
+  <header class="sticky top-0 z-40 bg-gradient-to-r from-pineda-navy via-pineda-deep to-pineda-surgical text-white shadow-lg safe-top">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+        
+        <!-- Logo y Título -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateToTab('dashboard')">
+          <div class="bg-white/95 p-1.5 rounded-xl shadow-md flex items-center justify-center h-11 w-11 sm:h-13 sm:w-13 border border-white/40 overflow-hidden">
+            <img src="assets/logo.png" alt="Logo XIV Congreso Pineda" class="h-full w-full object-contain">
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs sm:text-sm font-bold tracking-wider uppercase text-pineda-turquoise drop-shadow-sm">XIV Congreso Pineda</span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-white/15 text-white/90">2026</span>
+            </div>
+            <h1 class="text-sm sm:text-lg font-extrabold tracking-tight text-white leading-tight">
+              Evaluación de E-Pósters
+            </h1>
+            <p class="hidden sm:block text-[11px] text-white/75 truncate">
+              Hospital Central Universitario "Dr. Antonio María Pineda" (HCUAMP)
+            </p>
+          </div>
+        </div>
+
+        <!-- Indicadores de Estado y Acciones Rápidas -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          
+          <!-- Quorum Badge en Header -->
+          <div id="header-quorum-badge" class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold backdrop-blur-sm">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span class="text-white/80">Quórum:</span>
+            <span id="header-quorum-text" class="text-emerald-300 font-bold">0.0%</span>
+          </div>
+
+          <!-- Indicador de Red / Sincronización -->
+          <div id="sync-status-indicator" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-400/30" title="Estado de conexión">
+            <i data-lucide="cloud" class="w-3.5 h-3.5"></i>
+            <span id="sync-status-label" class="hidden sm:inline">Online</span>
+          </div>
+
+          <!-- Botón de Sincronizar -->
+          <button id="btn-sync-now" onclick="syncWithBackend(true)" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition active:scale-95" title="Sincronizar con Google Sheets">
+            <i data-lucide="refresh-cw" class="w-4 h-4" id="sync-icon"></i>
+          </button>
+
+          <!-- Botón de Configuración -->
+          <button onclick="navigateToTab('config')" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition active:scale-95" title="Configurar conexión">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Navegación Desktop -->
+          <nav class="hidden lg:flex items-center space-x-1 ml-4 pl-4 border-l border-white/20">
+            <button onclick="navigateToTab('dashboard')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="dashboard">
+              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+              <span>Dashboard</span>
+            </button>
+            <button onclick="navigateToTab('registro')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="registro">
+              <i data-lucide="user-check" class="w-4 h-4"></i>
+              <span>Registrar</span>
+            </button>
+            <button onclick="navigateToTab('catalogo')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="catalogo">
+              <i data-lucide="book-open" class="w-4 h-4"></i>
+              <span>Catálogo (56)</span>
+            </button>
+            <button onclick="navigateToTab('spreadsheet')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="spreadsheet">
+              <i data-lucide="table-2" class="w-4 h-4"></i>
+              <span>Planilla en Vivo</span>
+            </button>
+          </nav>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner de Notificación Offline / Sync Pendiente -->
+  <div id="offline-banner" class="hidden bg-amber-500 text-amber-950 px-4 py-2 text-xs sm:text-sm font-semibold flex items-center justify-between shadow-sm">
+    <div class="flex items-center space-x-2 max-w-7xl mx-auto w-full">
+      <i data-lucide="wifi-off" class="w-4 h-4 flex-shrink-0"></i>
+      <span>Trabajando sin conexión a Internet. Las asistencias se guardan localmente y se enviarán a Google Sheets cuando se restablezca la red.</span>
+    </div>
+  </div>
+
+  <!-- ==================== CONTENEDOR PRINCIPAL ==================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 safe-bottom">
+
+    <!-- ==================== VISTA 1: DASHBOARD OPERATIVO ==================== -->
+    <section id="view-dashboard" class="tab-content active space-y-6">
+      
+      <!-- Banner de Resumen / Saludos -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-pineda-deep via-pineda-surgical to-pineda-teal text-white p-6 sm:p-8 shadow-xl">
+        <div class="absolute -right-8 -bottom-8 w-48 h-48 opacity-10 pointer-events-none">
+          <img src="assets/logo.png" alt="Watermark" class="w-full h-full object-contain filter invert">
+        </div>
+        <div class="relative z-10 max-w-3xl">
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider text-white mb-3">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-pineda-turquoise"></i>
+            <span>Lunes 2 y Martes 3 de Noviembre, 2026 • 11:00 AM - 06:00 PM</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white mb-2">
+            Sala de Control y Evaluación en Tiempo Real
+          </h2>
+          <p class="text-sm sm:text-base text-white/90 leading-relaxed">
+            Monitor centralizado del aforo de evaluadores, recepción de ponentes y quórum oficial para los 56 trabajos científicos del Hospital Central Universitario "Dr. Antonio María Pineda".
+          </p>
+
+          <div class="mt-5 flex flex-wrap gap-3">
+            <button onclick="navigateToTab('registro')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white text-pineda-deep font-bold text-xs sm:text-sm hover:bg-slate-100 shadow-md transition active:scale-95">
+              <i data-lucide="user-plus" class="w-4 h-4 text-pineda-surgical"></i>
+              <span>Registrar Asistencia de Ponente</span>
+            </button>
+            <button onclick="navigateToTab('spreadsheet')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-xs sm:text-sm border border-white/25 transition active:scale-95">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+              <span>Consultar Planilla Transaccional</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPIs METRICS GRID -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        
+        <!-- KPI 1: Total Posters -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Pósters Totales</span>
+            <div class="w-10 h-10 rounded-xl bg-pineda-lightTeal flex items-center justify-center text-pineda-teal">
+              <i data-lucide="files" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-slate-900" id="kpi-total-posters">56</div>
+            <div class="text-xs text-slate-500 mt-1 flex items-center space-x-1">
+              <span>Matriz fija del congreso</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 2: Ponentes Presentes & Quórum -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Ponentes Registrados</span>
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <i data-lucide="user-check" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-baseline space-x-2">
+              <span class="text-3xl sm:text-4xl font-extrabold text-emerald-600" id="kpi-present-count">0</span>
+              <span class="text-xs font-bold text-slate-500" id="kpi-pending-fraction">de 56</span>
+            </div>
+            <!-- Progress Bar -->
+            <div class="mt-2 w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div id="kpi-quorum-bar" class="bg-gradient-to-r from-emerald-500 to-pineda-teal h-2 rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+            <div class="text-xs text-slate-600 font-semibold mt-1.5 flex justify-between">
+              <span>Quórum:</span>
+              <span id="kpi-quorum-percent" class="text-emerald-700 font-bold">0.0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 3: Acompañantes en Sala -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Acompañantes</span>
+            <div class="w-10 h-10 rounded-xl bg-sky-50 flex items-center justify-center text-pineda-surgical">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-pineda-surgical" id="kpi-total-companions">0</div>
+            <div class="text-xs text-slate-500 mt-1 flex items-center space-x-1">
+              <span>Máx. 2 por ponente</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 4: Aforo Total en Tiempo Real -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Aforo Total en Sala</span>
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-pineda-deep">
+              <i data-lucide="door-open" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-pineda-deep" id="kpi-total-aforo">0</div>
+            <div class="text-xs text-slate-500 mt-1 flex items-center space-x-1">
+              <span>Ponentes + Acompañantes</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DESGLOSE POR SALAS Y DÍAS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Salón 1 -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-pineda-deep text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                S1
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Salón 1 (Principal)</h3>
+                <p class="text-xs text-slate-500">Lun 2 nov (28 trabajos) + Mar 3 nov (20 trabajos)</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">Total: 48</span>
+          </div>
+
+          <div class="mt-4 grid grid-cols-3 gap-3 text-center">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-xl font-extrabold text-emerald-600" id="s1-presentes">0</div>
+              <div class="text-[11px] font-semibold text-slate-500 uppercase mt-0.5">Presentes</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-xl font-extrabold text-amber-600" id="s1-pendientes">48</div>
+              <div class="text-[11px] font-semibold text-slate-500 uppercase mt-0.5">Pendientes</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-xl font-extrabold text-pineda-deep" id="s1-aforo">0</div>
+              <div class="text-[11px] font-semibold text-slate-500 uppercase mt-0.5">Aforo Sala</div>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+              <span>Avance de Quórum Salón 1</span>
+              <span id="s1-progress-text">0.0%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div id="s1-progress-bar" class="bg-pineda-surgical h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Salón 2 -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-pineda-teal text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                S2
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Salón 2 (Paralelo)</h3>
+                <p class="text-xs text-slate-500">Lun 2 nov (8 trabajos • 11:00 AM a 01:00 PM)</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">Total: 8</span>
+          </div>
+
+          <div class="mt-4 grid grid-cols-3 gap-3 text-center">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-xl font-extrabold text-emerald-600" id="s2-presentes">0</div>
+              <div class="text-[11px] font-semibold text-slate-500 uppercase mt-0.5">Presentes</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-xl font-extrabold text-amber-600" id="s2-pendientes">8</div>
+              <div class="text-[11px] font-semibold text-slate-500 uppercase mt-0.5">Pendientes</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-xl font-extrabold text-pineda-teal" id="s2-aforo">0</div>
+              <div class="text-[11px] font-semibold text-slate-500 uppercase mt-0.5">Aforo Sala</div>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+              <span>Avance de Quórum Salón 2</span>
+              <span id="s2-progress-text">0.0%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div id="s2-progress-bar" class="bg-pineda-teal h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ESPECIALIDADES MÉDICAS TOP RANKING -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+              <i data-lucide="stethoscope" class="w-5 h-5 text-pineda-surgical"></i>
+              <span>Distribución por Especialidades Médicas</span>
+            </h3>
+            <p class="text-xs text-slate-500">Frecuencia de áreas clínicas con trabajos presentados y registrados</p>
+          </div>
+          <span class="text-xs font-semibold text-slate-400" id="specialties-count-badge">Top Áreas</span>
+        </div>
+
+        <div id="specialties-ranking-container" class="space-y-3">
+          <!-- Generado dinámicamente -->
+          <div class="text-center py-6 text-sm text-slate-400">
+            Cargando estadísticas de especialidades...
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== VISTA 2: FORMULARIO DE REGISTRO RÁPIDO ==================== -->
+    <section id="view-registro" class="tab-content space-y-6">
+      
+      <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        
+        <!-- Header del Formulario -->
+        <div class="bg-gradient-to-r from-pineda-deep to-pineda-surgical text-white p-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center text-white border border-white/20">
+              <i data-lucide="clipboard-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-white">Registro de Asistencia del Ponente</h2>
+              <p class="text-xs text-white/80">Validación de quórum oficial y control de aforo por sala</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario Body -->
+        <form id="attendance-form" onsubmit="handleAttendanceSubmit(event)" class="p-6 sm:p-8 space-y-6">
+          
+          <!-- SECCIÓN 1: SELECCIÓN DEL PÓSTER -->
+          <div class="space-y-4">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-pineda-deep border-b border-slate-100 pb-2 flex items-center space-x-2">
+              <span class="w-5 h-5 rounded-full bg-pineda-deep text-white text-[11px] flex items-center justify-center font-bold">1</span>
+              <span>Identificación del Trabajo Científico</span>
+            </h3>
+
+            <!-- Filtro de Día y Salón para acotar selector -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="filter-form-dia" class="block text-xs font-bold text-slate-700 mb-1">Día de Presentación</label>
+                <select id="filter-form-dia" onchange="filterPostersSelector()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                  <option value="TODOS">Todos los Días</option>
+                  <option value="Lun 2 nov">Lunes 2 de Noviembre</option>
+                  <option value="Mar 3 nov">Martes 3 de Noviembre</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="filter-form-salon" class="block text-xs font-bold text-slate-700 mb-1">Salón de Evaluación</label>
+                <select id="filter-form-salon" onchange="filterPostersSelector()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                  <option value="TODOS">Todos los Salones</option>
+                  <option value="Salón 1">Salón 1 (Principal)</option>
+                  <option value="Salón 2">Salón 2 (Paralelo)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Selector del Póster -->
+            <div>
+              <label for="select-poster" class="block text-xs font-bold text-slate-700 mb-1">
+                Selecciona el E-Póster <span class="text-rose-500">*</span>
+              </label>
+              <select id="select-poster" required onchange="onPosterSelected()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                <option value="">-- Elige un póster de la lista (56 disponibles) --</option>
+              </select>
+            </div>
+
+            <!-- Card con Detalles del Póster Seleccionado -->
+            <div id="selected-poster-preview" class="hidden rounded-xl border border-pineda-turquoise/40 bg-pineda-lightTeal/30 p-4 space-y-2">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center space-x-2">
+                  <span id="preview-poster-id" class="px-2.5 py-0.5 rounded-lg bg-pineda-deep text-white font-mono text-xs font-bold">P-01</span>
+                  <span id="preview-poster-salon" class="px-2 py-0.5 rounded-md bg-white text-pineda-deep text-xs font-semibold border border-slate-200">Salón 1</span>
+                  <span id="preview-poster-dia" class="px-2 py-0.5 rounded-md bg-white text-slate-700 text-xs font-semibold border border-slate-200">Lun 2 nov</span>
+                </div>
+                <span id="preview-poster-horario" class="text-xs font-bold text-pineda-surgical flex items-center space-x-1">
+                  <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                  <span>11:00 AM – 11:15 AM</span>
+                </span>
+              </div>
+              <h4 id="preview-poster-titulo" class="text-sm font-bold text-slate-900 leading-snug">
+                Título del trabajo...
+              </h4>
+              <div class="text-xs text-slate-500 flex items-center space-x-1.5 pt-1">
+                <i data-lucide="tag" class="w-3 h-3 text-pineda-teal"></i>
+                <span id="preview-poster-especialidad" class="font-medium text-slate-700">Especialidad sugerida</span>
+              </div>
+
+              <!-- Alerta si ya está registrado -->
+              <div id="preview-poster-already-registered" class="hidden p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center space-x-2">
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600 flex-shrink-0"></i>
+                <span id="preview-already-msg">Este póster ya fue registrado como PRESENTE.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 2: DATOS DEL PONENTE -->
+          <div class="space-y-4 pt-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-pineda-deep border-b border-slate-100 pb-2 flex items-center space-x-2">
+              <span class="w-5 h-5 rounded-full bg-pineda-deep text-white text-[11px] flex items-center justify-center font-bold">2</span>
+              <span>Datos del Ponente Oficial</span>
+            </h3>
+
+            <div>
+              <label for="ponente-nombre" class="block text-xs font-bold text-slate-700 mb-1">
+                Nombre Completo y Apellidos <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <i data-lucide="user" class="w-4 h-4"></i>
+                </div>
+                <input type="text" id="ponente-nombre" required placeholder="Ej: Dr. Alejandro Ramos / Dra. Mariana Colmenárez" class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="ponente-especialidad" class="block text-xs font-bold text-slate-700 mb-1">
+                  Especialidad Médica <span class="text-rose-500">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <i data-lucide="stethoscope" class="w-4 h-4"></i>
+                  </div>
+                  <input type="text" id="ponente-especialidad" list="lista-especialidades" required placeholder="Ej: Anestesiología, Cirugía..." class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                  <datalist id="lista-especialidades">
+                    <!-- Poblado dinámicamente -->
+                  </datalist>
+                </div>
+              </div>
+
+              <div>
+                <label for="ponente-telefono" class="block text-xs font-bold text-slate-700 mb-1">
+                  Teléfono / WhatsApp <span class="text-rose-500">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <i data-lucide="phone" class="w-4 h-4"></i>
+                  </div>
+                  <input type="tel" id="ponente-telefono" required placeholder="Ej: 0414-1234567 / +58 412..." class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label for="ponente-email" class="block text-xs font-bold text-slate-700 mb-1">
+                Correo Electrónico <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <i data-lucide="mail" class="w-4 h-4"></i>
+                </div>
+                <input type="email" id="ponente-email" required placeholder="ponente@gmail.com / ucla.edu.ve" class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 3: ACOMPAÑANTES (ACORDEÓN EXPANDIBLE MÁX. 2) -->
+          <div class="space-y-4 pt-2">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-pineda-deep flex items-center space-x-2">
+                <span class="w-5 h-5 rounded-full bg-pineda-deep text-white text-[11px] flex items-center justify-center font-bold">3</span>
+                <span>Acompañantes en Sala (Máximo 2)</span>
+              </h3>
+              <span class="text-[11px] font-semibold text-slate-500">Opcional para aforo</span>
+            </div>
+
+            <!-- Switch Acompañante 1 -->
+            <div class="rounded-xl border border-slate-200 p-4 space-y-3 bg-slate-50/50">
+              <div class="flex items-center justify-between">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" id="check-acomp1" onchange="toggleAcompFields(1)" class="w-4 h-4 text-pineda-surgical rounded focus:ring-pineda-surgical border-slate-300">
+                  <span class="text-xs font-bold text-slate-800">Registrar Acompañante 1</span>
+                </label>
+                <span class="text-[11px] text-slate-500">+1 persona al aforo</span>
+              </div>
+
+              <div id="fields-acomp1" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div>
+                  <label for="acomp1-nombre" class="block text-[11px] font-bold text-slate-600 mb-1">Nombre Completo</label>
+                  <input type="text" id="acomp1-nombre" placeholder="Nombre del acompañante" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20">
+                </div>
+                <div>
+                  <label for="acomp1-cedula" class="block text-[11px] font-bold text-slate-600 mb-1">Cédula / Documento de Identidad</label>
+                  <input type="text" id="acomp1-cedula" placeholder="Ej: V-12.345.678" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20">
+                </div>
+              </div>
+            </div>
+
+            <!-- Switch Acompañante 2 -->
+            <div class="rounded-xl border border-slate-200 p-4 space-y-3 bg-slate-50/50">
+              <div class="flex items-center justify-between">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" id="check-acomp2" onchange="toggleAcompFields(2)" class="w-4 h-4 text-pineda-surgical rounded focus:ring-pineda-surgical border-slate-300">
+                  <span class="text-xs font-bold text-slate-800">Registrar Acompañante 2</span>
+                </label>
+                <span class="text-[11px] text-slate-500">+1 persona al aforo</span>
+              </div>
+
+              <div id="fields-acomp2" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div>
+                  <label for="acomp2-nombre" class="block text-[11px] font-bold text-slate-600 mb-1">Nombre Completo</label>
+                  <input type="text" id="acomp2-nombre" placeholder="Nombre del acompañante" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20">
+                </div>
+                <div>
+                  <label for="acomp2-cedula" class="block text-[11px] font-bold text-slate-600 mb-1">Cédula / Documento de Identidad</label>
+                  <input type="text" id="acomp2-cedula" placeholder="Ej: V-23.456.789" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20">
+                </div>
+              </div>
+            </div>
+
+            <!-- Resumen de Aforo Dinámico -->
+            <div class="rounded-xl bg-slate-100 p-3.5 flex items-center justify-between">
+              <div class="flex items-center space-x-2 text-xs font-semibold text-slate-700">
+                <i data-lucide="users" class="w-4 h-4 text-pineda-surgical"></i>
+                <span>Impacto en Aforo de la Sala:</span>
+              </div>
+              <div class="text-xs font-bold text-pineda-deep bg-white px-2.5 py-1 rounded-md border border-slate-200">
+                <span id="label-aforo-calculado">+1 Persona (Ponente)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTÓN DE ENVÍO -->
+          <div class="pt-4">
+            <button type="submit" id="btn-submit-attendance" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-pineda-deep via-pineda-surgical to-pineda-teal text-white font-bold text-sm shadow-lg hover:shadow-xl active:scale-[0.99] transition flex items-center justify-center space-x-2">
+              <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+              <span>Confirmar y Guardar Asistencia</span>
+            </button>
+            <p class="text-[11px] text-center text-slate-400 mt-2">
+              Los datos se sincronizan con Google Sheets de forma segura con soporte offline.
+            </p>
+          </div>
+
+        </form>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== VISTA 3: SPREADSHEET INTERACTIVO ==================== -->
+    <section id="view-spreadsheet" class="tab-content space-y-6">
+      
+      <!-- Controles y Filtros de la Tabla -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-4">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+              <i data-lucide="table" class="w-5 h-5 text-pineda-deep"></i>
+              <span>Planilla Transaccional de Asistencia</span>
+            </h2>
+            <p class="text-xs text-slate-500">Matriz de los 56 trabajos en vivo con búsqueda reactiva y exportación</p>
+          </div>
+
+          <!-- Botones de Acción (Exportar) -->
+          <div class="flex items-center space-x-2">
+            <button onclick="exportTableToCSV()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95">
+              <i data-lucide="download" class="w-4 h-4 text-pineda-surgical"></i>
+              <span>Exportar CSV</span>
+            </button>
+            <button onclick="exportTableToExcel()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+              <span>Exportar Excel</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtros Rápidos -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
+          
+          <!-- Buscador Global -->
+          <div class="sm:col-span-2 relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+              <i data-lucide="search" class="w-4 h-4"></i>
+            </div>
+            <input type="text" id="table-search-input" oninput="renderSpreadsheetTable()" placeholder="Buscar por ponente, título, ID, especialidad..." class="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:bg-white focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+          </div>
+
+          <!-- Filtro Estado -->
+          <div>
+            <select id="table-filter-estado" onchange="renderSpreadsheetTable()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:bg-white focus:border-pineda-surgical focus:outline-none transition font-semibold text-slate-700">
+              <option value="TODOS">Estado: Todos</option>
+              <option value="PRESENTE">Solo Presentes (Quórum)</option>
+              <option value="PENDIENTE">Solo Pendientes</option>
+            </select>
+          </div>
+
+          <!-- Filtro Salón -->
+          <div>
+            <select id="table-filter-salon" onchange="renderSpreadsheetTable()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:bg-white focus:border-pineda-surgical focus:outline-none transition font-semibold text-slate-700">
+              <option value="TODOS">Salón: Todos</option>
+              <option value="Salón 1">Salón 1 (Principal)</option>
+              <option value="Salón 2">Salón 2 (Paralelo)</option>
+            </select>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Tabla Responsiva -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-100/80 text-slate-700 border-b border-slate-200 font-bold uppercase tracking-wider text-[11px]">
+                <th class="py-3 px-3.5 text-center w-14">ID</th>
+                <th class="py-3 px-3.5">Salón & Día</th>
+                <th class="py-3 px-3.5">Horario</th>
+                <th class="py-3 px-4 min-w-[260px]">Título del Póster</th>
+                <th class="py-3 px-3.5 min-w-[160px]">Ponente / Especialidad</th>
+                <th class="py-3 px-3.5 text-center">Aforo</th>
+                <th class="py-3 px-3.5 text-center">Estado</th>
+                <th class="py-3 px-3.5 text-center min-w-[120px]">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="spreadsheet-tbody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Renderizado Dinámico -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Footer de la Tabla -->
+        <div class="p-3.5 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-500">
+          <span id="table-results-counter">Mostrando 56 de 56 trabajos</span>
+          <span class="font-medium">Hospital Central Universitario "Dr. Antonio María Pineda"</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== VISTA 4: CATÁLOGO Y CRONOGRAMA ==================== -->
+    <section id="view-catalogo" class="tab-content space-y-6">
+      
+      <!-- Barra Superior del Catálogo -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+              <i data-lucide="calendar-days" class="w-5 h-5 text-pineda-surgical"></i>
+              <span>Cronograma y Catálogo de Trabajos</span>
+            </h2>
+            <p class="text-xs text-slate-500">Bloques de 15 minutos en Salón 1 y Salón 2</p>
+          </div>
+
+          <!-- Selector de Franja de Horario -->
+          <div class="flex items-center space-x-2">
+            <button onclick="filterCatalogByTime('ALL')" class="catalog-time-filter active px-3 py-1.5 rounded-lg text-xs font-bold bg-pineda-deep text-white transition" data-time="ALL">
+              Todos
+            </button>
+            <button onclick="filterCatalogByTime('11-13')" class="catalog-time-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-time="11-13">
+              11:00 AM – 01:00 PM
+            </button>
+            <button onclick="filterCatalogByTime('13-15')" class="catalog-time-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-time="13-15">
+              01:00 PM – 03:00 PM
+            </button>
+            <button onclick="filterCatalogByTime('15-18')" class="catalog-time-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-time="15-18">
+              03:00 PM – 06:00 PM
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de Tarjetas del Catálogo -->
+      <div id="catalog-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Renderizado dinámicamente -->
+      </div>
+
+    </section>
+
+    <!-- ==================== VISTA 5: CONFIGURACIÓN Y SINCRONIZACIÓN ==================== -->
+    <section id="view-config" class="tab-content space-y-6">
+      
+      <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8 space-y-6">
+        
+        <div>
+          <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+            <i data-lucide="sliders" class="w-5 h-5 text-pineda-deep"></i>
+            <span>Configuración de Conectividad</span>
+          </h2>
+          <p class="text-xs text-slate-500">Conexión Serverless entre Vercel y Google Apps Script</p>
+        </div>
+
+        <div class="space-y-4">
+          
+          <div>
+            <label for="api-url-input" class="block text-xs font-bold text-slate-700 mb-1">
+              URL del Web App de Google Apps Script (doGet/doPost)
+            </label>
+            <input type="url" id="api-url-input" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono bg-white focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+            <p class="text-[11px] text-slate-400 mt-1">
+              Despliega el script en tu hoja de Google Sheets ID: <code class="text-pineda-deep font-bold">1WcUhQ5DaZbiiKY0HWnj9uUR5_TQ9cpy8TTWNNV0sXKI</code>.
+            </p>
+          </div>
+
+          <div class="flex items-center space-x-3">
+            <button onclick="saveAndTestApiUrl()" class="px-4 py-2.5 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95">
+              <i data-lucide="plug-zap" class="w-4 h-4"></i>
+              <span>Probar y Guardar Conexión</span>
+            </button>
+            <button onclick="useDemoMode()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition active:scale-95">
+              <span>Restablecer Modo Demo</span>
+            </button>
+          </div>
+
+          <!-- Cola Offline Status -->
+          <div class="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800">Cola de Registros Offline:</span>
+              <span id="config-queue-count" class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-200 text-slate-700">0 pendientes</span>
+            </div>
+            <p class="text-[11px] text-slate-500">
+              Registros guardados en el navegador pendientes de enviar a Google Sheets.
+            </p>
+            <button onclick="syncOfflineQueue()" class="text-xs font-bold text-pineda-surgical hover:underline flex items-center space-x-1">
+              <i data-lucide="arrow-up-circle" class="w-3.5 h-3.5"></i>
+              <span>Procesar Cola Ahora</span>
+            </button>
+          </div>
+
+          <!-- Respaldo de Datos Locales -->
+          <div class="rounded-xl border border-slate-200 p-4 space-y-2">
+            <span class="text-xs font-bold text-slate-800">Respaldo y Auditoría Local:</span>
+            <p class="text-[11px] text-slate-500">Descarga una copia completa de seguridad en formato JSON de todas las asistencias registradas.</p>
+            <div class="flex items-center space-x-2 pt-1">
+              <button onclick="downloadLocalBackup()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center space-x-1">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Descargar Backup JSON</span>
+              </button>
+              <button onclick="clearLocalCache()" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center space-x-1">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                <span>Limpiar Caché Local</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== MODAL: CREDENCIAL OFICIAL DE ASISTENCIA ==================== -->
+  <div id="credential-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-200 print-card animate-in fade-in zoom-in duration-200">
+      
+      <!-- Encabezado Credencial Institucional -->
+      <div class="bg-gradient-to-r from-pineda-navy via-pineda-deep to-pineda-surgical text-white p-5 text-center relative">
+        <button onclick="closeCredentialModal()" class="no-print absolute top-3 right-3 text-white/70 hover:text-white p-1 rounded-full bg-white/10">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="w-12 h-12 mx-auto bg-white p-1 rounded-xl shadow-md mb-2">
+          <img src="assets/logo.png" alt="Logo" class="w-full h-full object-contain">
+        </div>
+        <div class="text-[10px] font-bold tracking-widest uppercase text-pineda-turquoise">Hospital Central Universitario Dr. Antonio María Pineda</div>
+        <h3 class="text-base font-extrabold text-white">XIV CONGRESO PINEDA 2026</h3>
+        <p class="text-[11px] text-white/80">Comprobante de Asistencia y Aforo • Jornada de E-Pósters</p>
+      </div>
+
+      <!-- Cuerpo de la Credencial -->
+      <div class="p-6 space-y-4" id="credential-modal-body">
+        
+        <div class="text-center pb-2 border-b border-slate-100">
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+            ✓ PRESENCIA CONFIRMADA
+          </span>
+          <div class="text-[11px] text-slate-400 mt-1" id="cred-timestamp">02/11/2026 - 11:05 AM</div>
+        </div>
+
+        <div class="space-y-2.5 text-xs">
+          <div>
+            <span class="font-bold text-slate-500 uppercase text-[10px]">Póster Científico:</span>
+            <div class="font-bold text-slate-900 leading-snug" id="cred-titulo">Título del trabajo...</div>
+            <div class="flex items-center space-x-2 mt-1">
+              <span class="font-mono font-bold text-pineda-deep bg-slate-100 px-2 py-0.5 rounded" id="cred-id">P-01</span>
+              <span class="text-slate-500" id="cred-horario">11:00 AM - 11:15 AM</span>
+              <span class="font-semibold text-slate-700" id="cred-salon">Salón 1</span>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-100">
+            <span class="font-bold text-slate-500 uppercase text-[10px]">Ponente Autor:</span>
+            <div class="text-sm font-bold text-slate-900" id="cred-ponente">Dr. Nombre Apellido</div>
+            <div class="text-slate-600" id="cred-especialidad">Especialidad</div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-100" id="cred-acomps-container">
+            <span class="font-bold text-slate-500 uppercase text-[10px]">Acompañantes en Sala:</span>
+            <div class="text-slate-700" id="cred-acomps-list">Ninguno</div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between bg-slate-50 p-2.5 rounded-xl">
+            <span class="font-bold text-slate-700">Aforo Registrado:</span>
+            <span class="font-extrabold text-pineda-deep text-sm" id="cred-aforo">1 persona</span>
+          </div>
+        </div>
+
+        <!-- Código de Validación / Hash -->
+        <div class="text-center pt-2">
+          <div class="text-[10px] font-mono text-slate-400" id="cred-hash">REG-2026-PINEDA-001</div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="no-print pt-2 flex items-center space-x-2">
+          <button onclick="window.print()" class="flex-1 py-2.5 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow transition">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Imprimir Credencial</span>
+          </button>
+          <button onclick="closeCredentialModal()" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+            <span>Cerrar</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== BARRA DE NAVEGACIÓN FLOTANTE (MOBILE FIRST) ==================== -->
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass-bottom-bar safe-navbar-bottom">
+    <div class="max-w-md mx-auto grid grid-cols-5 h-16">
+      
+      <button onclick="navigateToTab('dashboard')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="dashboard">
+        <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-semibold">Dashboard</span>
+      </button>
+
+      <button onclick="navigateToTab('registro')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="registro">
+        <div class="w-8 h-8 rounded-full bg-pineda-surgical text-white flex items-center justify-center shadow-md -mt-3 mb-0.5 border-2 border-white">
+          <i data-lucide="user-check" class="w-4 h-4"></i>
+        </div>
+        <span class="text-[10px] font-bold text-pineda-deep">Registrar</span>
+      </button>
+
+      <button onclick="navigateToTab('catalogo')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="catalogo">
+        <i data-lucide="book-open" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-semibold">Catálogo</span>
+      </button>
+
+      <button onclick="navigateToTab('spreadsheet')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="spreadsheet">
+        <i data-lucide="table-2" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-semibold">Planilla</span>
+      </button>
+
+      <button onclick="navigateToTab('config')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="config">
+        <i data-lucide="settings" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-semibold">Ajustes</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- ==================== TOAST NOTIFICATIONS CONTAINER ==================== -->
+  <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2 pointer-events-none max-w-sm w-full px-4"></div>
+
+  <!-- SCRIPT DE DATOS Y APLICACIÓN -->
+  <script src="data/posters.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
