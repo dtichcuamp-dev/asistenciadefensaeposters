@@ -3,7 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>XIV Congreso Pineda | Control de Asistencia E-Pósters HCUAMP</title>
+  <title>XIV Congreso Pineda 2026 | Control de Asistencia E-Pósters HCUAMP</title>
+  <meta name="title" content="XIV Congreso Pineda 2026 | Control de Asistencia E-Pósters HCUAMP">
+  <meta name="description" content="Plataforma oficial del Hospital Central Universitario Dr. Antonio María Pineda (HCUAMP) para el control de asistencia, quórum en tiempo real y certificación digital de los 56 e-pósters de la Jornada Científica 2026.">
+  <meta name="keywords" content="Congreso Pineda, HCUAMP, E-Posters, Medicina, Jornada Científica, Barquisimeto, Asistencia Médica, Quórum, Certificados Médicos">
+  <meta name="author" content="Departamento de Tecnología, Información y Comunicación (DTIC) - HCUAMP">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://asistenciadefensaeposters.vercel.app/">
+
+  <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://asistenciadefensaeposters.vercel.app/">
+  <meta property="og:title" content="XIV Congreso Pineda 2026 | Control de Asistencia E-Pósters HCUAMP">
+  <meta property="og:description" content="Plataforma oficial del Hospital Central Universitario Dr. Antonio María Pineda (HCUAMP) para el control de asistencia, quórum en tiempo real y certificación digital de los 56 e-pósters de la Jornada Científica 2026.">
+  <meta property="og:image" content="https://asistenciadefensaeposters.vercel.app/assets/og-image.jpg">
+  <meta property="og:image:secure_url" content="https://asistenciadefensaeposters.vercel.app/assets/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="XIV Congreso Pineda 2026 - Jornada Científica de Evaluación de E-Pósters - HCUAMP">
+  <meta property="og:site_name" content="XIV Congreso Pineda 2026 - HCUAMP">
+  <meta property="og:locale" content="es_VE">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://asistenciadefensaeposters.vercel.app/">
+  <meta name="twitter:title" content="XIV Congreso Pineda 2026 | Control de Asistencia E-Pósters HCUAMP">
+  <meta name="twitter:description" content="Plataforma oficial del HCUAMP para el registro de asistencia, quórum hospitalario y emisión digital de certificados de los 56 trabajos científicos.">
+  <meta name="twitter:image" content="https://asistenciadefensaeposters.vercel.app/assets/og-image.jpg">
+  <meta name="twitter:image:alt" content="XIV Congreso Pineda 2026 - Hospital Central Universitario Dr. Antonio María Pineda">
+
+  <!-- Telegram & WhatsApp Link Preview Tags -->
+  <meta name="telegram:channel" content="@HCUAMP">
+  <meta itemprop="name" content="XIV Congreso Pineda 2026 | Control de Asistencia E-Pósters HCUAMP">
+  <meta itemprop="description" content="Plataforma oficial de control de asistencia, aforo y certificación digital de la Jornada Científica de E-Pósters del HCUAMP.">
+  <meta itemprop="image" content="https://asistenciadefensaeposters.vercel.app/assets/og-image.jpg">
+
+  <!-- Schema.org Datos Estructurados JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MedicalEvent",
+    "name": "XIV Congreso Pineda - Jornada Científica de Evaluación de E-Pósters 2026",
+    "description": "Jornada científica de presentación y defensa presencial de 56 e-pósters de investigación médica en el Hospital Central Universitario Dr. Antonio María Pineda.",
+    "startDate": "2026-11-02T11:00:00-04:00",
+    "endDate": "2026-11-03T18:00:00-04:00",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "location": {
+      "@type": "Place",
+      "name": "Hospital Central Universitario Dr. Antonio María Pineda (HCUAMP)",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Av. Las Palmas con Av. Concordia",
+        "addressLocality": "Barquisimeto",
+        "addressRegion": "Lara",
+        "addressCountry": "VE"
+      }
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "Hospital Central Universitario Dr. Antonio María Pineda",
+      "url": "https://asistenciadefensaeposters.vercel.app/"
+    },
+    "image": [
+      "https://asistenciadefensaeposters.vercel.app/assets/og-image.jpg"
+    ],
+    "url": "https://asistenciadefensaeposters.vercel.app/"
+  }
+  </script>
   
   <!-- Favicons y PWA Meta Tags -->
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
@@ -47,6 +115,9 @@
     }
   </script>
 
+  <!-- Variables de Entorno y Configuración Centralizada -->
+  <script src="config.js"></script>
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -58,32 +129,35 @@
   <!-- ==================== HEADER INSTITUCIONAL ==================== -->
   <header class="sticky top-0 z-40 bg-gradient-to-r from-pineda-navy via-pineda-deep to-pineda-surgical text-white shadow-lg safe-top">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 sm:h-20">
+      <div class="flex items-center justify-between h-18 sm:h-22 py-2">
         
-        <!-- Logo y Título -->
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateToTab('dashboard')">
-          <div class="bg-white/95 p-1.5 rounded-xl shadow-md flex items-center justify-center h-11 w-11 sm:h-13 sm:w-13 border border-white/40 overflow-hidden">
-            <img src="assets/logo.png" alt="Logo XIV Congreso Pineda" class="h-full w-full object-contain">
+        <!-- Logo Oficial Ampliado y Título Institucional -->
+        <div class="flex items-center space-x-3 cursor-pointer group" onclick="navigateToTab('dashboard')" title="Inicio • XIV Congreso Pineda (HCUAMP)">
+          <!-- Contenedor Horizontal para el Logotipo Completo (1024x426) -->
+          <div class="bg-white px-3.5 py-1.5 rounded-2xl shadow-md border border-white/60 flex items-center justify-center transition transform group-hover:scale-[1.02] group-hover:shadow-lg">
+            <img src="assets/logo.png" alt="Logotipo Oficial XIV Congreso Pineda - HCUAMP" class="h-10 sm:h-13 md:h-15 w-auto object-contain">
           </div>
-          <div>
-            <div class="flex items-center space-x-2">
-              <span class="text-xs sm:text-sm font-bold tracking-wider uppercase text-pineda-turquoise drop-shadow-sm">XIV Congreso Pineda</span>
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-white/15 text-white/90">2026</span>
+          <div class="hidden sm:block">
+            <div class="flex items-center space-x-1.5">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-white/20 text-pineda-turquoise uppercase tracking-wider">
+                Jornada Científica 2026
+              </span>
+              <span class="text-[10px] font-semibold text-white/70">HCUAMP</span>
             </div>
-            <h1 class="text-sm sm:text-lg font-extrabold tracking-tight text-white leading-tight">
-              Evaluación de E-Pósters
+            <h1 class="text-xs sm:text-sm font-extrabold tracking-tight text-white leading-tight mt-0.5">
+              Control Oficial de Asistencia y Aforo
             </h1>
-            <p class="hidden sm:block text-[11px] text-white/75 truncate">
-              Hospital Central Universitario "Dr. Antonio María Pineda" (HCUAMP)
+            <p class="text-[10px] text-white/75 truncate">
+              Evaluación y Acreditación de E-Pósters
             </p>
           </div>
         </div>
 
-        <!-- Indicadores de Estado y Acciones Rápidas -->
+        <!-- Indicadores de Estado y Acciones Rápidas con Tooltips Enriquecidos -->
         <div class="flex items-center space-x-2 sm:space-x-3">
           
-          <!-- Quorum Badge en Header -->
-          <div id="header-quorum-badge" class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold backdrop-blur-sm">
+          <!-- Quorum Badge en Header con Tooltip -->
+          <div id="header-quorum-badge" class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold backdrop-blur-sm cursor-help" title="Quórum Oficial en Tiempo Real: Porcentaje de trabajos defendidos respecto al catálogo de 56 e-pósters">
             <span class="relative flex h-2.5 w-2.5">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -92,39 +166,39 @@
             <span id="header-quorum-text" class="text-emerald-300 font-bold">0.0%</span>
           </div>
 
-          <!-- Indicador de Red / Sincronización -->
-          <div id="sync-status-indicator" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-400/30" title="Estado de conexión">
+          <!-- Indicador de Red / Sincronización con Tooltip -->
+          <div id="sync-status-indicator" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 cursor-help" title="Estado de conectividad y sincronización con el Servidor Central Institucional">
             <i data-lucide="cloud" class="w-3.5 h-3.5"></i>
-            <span id="sync-status-label" class="hidden sm:inline">Online</span>
+            <span id="sync-status-label" class="hidden sm:inline">En Línea</span>
           </div>
 
-          <!-- Botón de Sincronizar -->
-          <button id="btn-sync-now" onclick="syncWithBackend(true)" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition active:scale-95" title="Sincronizar con Google Sheets">
+          <!-- Botón de Sincronizar con Tooltip -->
+          <button id="btn-sync-now" onclick="syncWithBackend(true)" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition active:scale-95" title="Actualizar datos y sincronizar con el Servidor Central Institucional">
             <i data-lucide="refresh-cw" class="w-4 h-4" id="sync-icon"></i>
           </button>
 
-          <!-- Botón de Configuración -->
-          <button onclick="navigateToTab('config')" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition active:scale-95" title="Configurar conexión">
+          <!-- Botón de Configuración con Tooltip -->
+          <button onclick="navigateToTab('config')" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition active:scale-95" title="Centro de Conexión Institucional y Respaldo de Datos">
             <i data-lucide="settings" class="w-4 h-4"></i>
           </button>
 
-          <!-- Navegación Desktop -->
+          <!-- Navegación Desktop con Tooltips -->
           <nav class="hidden lg:flex items-center space-x-1 ml-4 pl-4 border-l border-white/20">
-            <button onclick="navigateToTab('dashboard')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="dashboard">
+            <button onclick="navigateToTab('dashboard')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="dashboard" title="Panel analítico de quórum, aforo y métricas por sala">
               <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
               <span>Dashboard</span>
             </button>
-            <button onclick="navigateToTab('registro')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="registro">
+            <button onclick="navigateToTab('registro')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="registro" title="Formulario oficial de acreditación para ponentes y acompañantes">
               <i data-lucide="user-check" class="w-4 h-4"></i>
               <span>Registrar</span>
             </button>
-            <button onclick="navigateToTab('catalogo')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="catalogo">
+            <button onclick="navigateToTab('catalogo')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="catalogo" title="Cronograma oficial de los 56 trabajos científicos en bloques de 15 minutos">
               <i data-lucide="book-open" class="w-4 h-4"></i>
               <span>Catálogo (56)</span>
             </button>
-            <button onclick="navigateToTab('spreadsheet')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="spreadsheet">
+            <button onclick="navigateToTab('planilla')" class="nav-desktop-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-white/90 hover:bg-white/15 transition flex items-center space-x-1.5" data-tab="planilla" title="Planilla oficial transaccional de asistencia con búsqueda en vivo y exportación">
               <i data-lucide="table-2" class="w-4 h-4"></i>
-              <span>Planilla en Vivo</span>
+              <span>Planilla Oficial</span>
             </button>
           </nav>
         </div>
@@ -133,11 +207,11 @@
     </div>
   </header>
 
-  <!-- Banner de Notificación Offline / Sync Pendiente -->
+  <!-- Banner de Notificación Offline / Sync Pendiente (Sin jerga técnica) -->
   <div id="offline-banner" class="hidden bg-amber-500 text-amber-950 px-4 py-2 text-xs sm:text-sm font-semibold flex items-center justify-between shadow-sm">
     <div class="flex items-center space-x-2 max-w-7xl mx-auto w-full">
       <i data-lucide="wifi-off" class="w-4 h-4 flex-shrink-0"></i>
-      <span>Trabajando sin conexión a Internet. Las asistencias se guardan localmente y se enviarán a Google Sheets cuando se restablezca la red.</span>
+      <span>Modo sin conexión a red. Las asistencias se resguardan de forma segura en este dispositivo y se transmitirán al Servidor Central una vez restablecida la conexión.</span>
     </div>
   </div>
 
@@ -147,41 +221,49 @@
     <!-- ==================== VISTA 1: DASHBOARD OPERATIVO ==================== -->
     <section id="view-dashboard" class="tab-content active space-y-6">
       
-      <!-- Banner de Resumen / Saludos -->
+      <!-- Banner de Resumen Institucional -->
       <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-pineda-deep via-pineda-surgical to-pineda-teal text-white p-6 sm:p-8 shadow-xl">
         <div class="absolute -right-8 -bottom-8 w-48 h-48 opacity-10 pointer-events-none">
           <img src="assets/logo.png" alt="Watermark" class="w-full h-full object-contain filter invert">
         </div>
-        <div class="relative z-10 max-w-3xl">
-          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider text-white mb-3">
-            <i data-lucide="calendar" class="w-3.5 h-3.5 text-pineda-turquoise"></i>
-            <span>Lunes 2 y Martes 3 de Noviembre, 2026 • 11:00 AM - 06:00 PM</span>
+        <div class="relative z-10 max-w-4xl">
+          
+          <!-- Fila con Logotipo Institucional Destacado y Fechas -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-white/20">
+            <div class="bg-white px-4 py-2 rounded-2xl shadow-lg border border-white/40 inline-flex items-center justify-center transition hover:scale-[1.01]" title="Logotipo Oficial • XIV Congreso Pineda (HCUAMP)">
+              <img src="assets/logo.png" alt="Logotipo Oficial Congreso Pineda" class="h-10 sm:h-12 md:h-14 w-auto object-contain">
+            </div>
+            <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider text-white" title="Calendario oficial de las jornadas de evaluación presencial">
+              <i data-lucide="calendar" class="w-4 h-4 text-pineda-turquoise"></i>
+              <span>Lunes 2 y Martes 3 de Noviembre, 2026 • 11:00 AM - 06:00 PM</span>
+            </div>
           </div>
+
           <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white mb-2">
-            Sala de Control y Evaluación en Tiempo Real
+            Sala de Control, Evaluación y Quórum en Tiempo Real
           </h2>
           <p class="text-sm sm:text-base text-white/90 leading-relaxed">
-            Monitor centralizado del aforo de evaluadores, recepción de ponentes y quórum oficial para los 56 trabajos científicos del Hospital Central Universitario "Dr. Antonio María Pineda".
+            Monitor centralizado de asistencia presencial de ponentes, aforo de evaluadores y quórum oficial para los 56 trabajos científicos del Hospital Central Universitario "Dr. Antonio María Pineda".
           </p>
 
           <div class="mt-5 flex flex-wrap gap-3">
-            <button onclick="navigateToTab('registro')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white text-pineda-deep font-bold text-xs sm:text-sm hover:bg-slate-100 shadow-md transition active:scale-95">
+            <button onclick="navigateToTab('registro')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white text-pineda-deep font-bold text-xs sm:text-sm hover:bg-slate-100 shadow-md transition active:scale-95" title="Abrir formulario para registrar asistencia del ponente">
               <i data-lucide="user-plus" class="w-4 h-4 text-pineda-surgical"></i>
               <span>Registrar Asistencia de Ponente</span>
             </button>
-            <button onclick="navigateToTab('spreadsheet')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-xs sm:text-sm border border-white/25 transition active:scale-95">
-              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
-              <span>Consultar Planilla Transaccional</span>
+            <button onclick="navigateToTab('planilla')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-xs sm:text-sm border border-white/25 transition active:scale-95" title="Ver la planilla oficial transaccional de asistencia y quórum">
+              <i data-lucide="table-2" class="w-4 h-4"></i>
+              <span>Consultar Planilla Oficial</span>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- KPIs METRICS GRID -->
+      <!-- KPIs METRICS GRID CON TOOLTIPS ENRIQUECIDOS -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         
         <!-- KPI 1: Total Posters -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition cursor-help" title="Total de 56 investigaciones y casos clínicos aceptados por el Comité Científico para defensa presencial">
           <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Pósters Totales</span>
             <div class="w-10 h-10 rounded-xl bg-pineda-lightTeal flex items-center justify-center text-pineda-teal">
@@ -197,7 +279,7 @@
         </div>
 
         <!-- KPI 2: Ponentes Presentes & Quórum -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition cursor-help" title="Número de ponentes que han formalizado su presencia física en sala y porcentaje de quórum respecto a los 56 trabajos">
           <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Ponentes Registrados</span>
             <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
@@ -210,7 +292,7 @@
               <span class="text-xs font-bold text-slate-500" id="kpi-pending-fraction">de 56</span>
             </div>
             <!-- Progress Bar -->
-            <div class="mt-2 w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+            <div class="mt-2 w-full bg-slate-100 rounded-full h-2 overflow-hidden" title="Progreso porcentual del quórum">
               <div id="kpi-quorum-bar" class="bg-gradient-to-r from-emerald-500 to-pineda-teal h-2 rounded-full transition-all duration-700" style="width: 0%"></div>
             </div>
             <div class="text-xs text-slate-600 font-semibold mt-1.5 flex justify-between">
@@ -221,7 +303,7 @@
         </div>
 
         <!-- KPI 3: Acompañantes en Sala -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition cursor-help" title="Total de acompañantes autorizados en sala (máximo 2 personas por ponente por motivos de bioseguridad y aforo)">
           <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Acompañantes</span>
             <div class="w-10 h-10 rounded-xl bg-sky-50 flex items-center justify-center text-pineda-surgical">
@@ -237,7 +319,7 @@
         </div>
 
         <!-- KPI 4: Aforo Total en Tiempo Real -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition cursor-help" title="Aforo acumulado en sala: Suma total de ponentes presenciales + acompañantes registrados">
           <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Aforo Total en Sala</span>
             <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-pineda-deep">
@@ -396,7 +478,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label for="filter-form-dia" class="block text-xs font-bold text-slate-700 mb-1">Día de Presentación</label>
-                <select id="filter-form-dia" onchange="filterPostersSelector()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                <select id="filter-form-dia" onchange="filterPostersSelector()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Filtrar pósters por día de presentación (Lunes o Martes)">
                   <option value="TODOS">Todos los Días</option>
                   <option value="Lun 2 nov">Lunes 2 de Noviembre</option>
                   <option value="Mar 3 nov">Martes 3 de Noviembre</option>
@@ -405,7 +487,7 @@
 
               <div>
                 <label for="filter-form-salon" class="block text-xs font-bold text-slate-700 mb-1">Salón de Evaluación</label>
-                <select id="filter-form-salon" onchange="filterPostersSelector()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                <select id="filter-form-salon" onchange="filterPostersSelector()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Filtrar pósters por salón asignado (Salón 1 o Salón 2)">
                   <option value="TODOS">Todos los Salones</option>
                   <option value="Salón 1">Salón 1 (Principal)</option>
                   <option value="Salón 2">Salón 2 (Paralelo)</option>
@@ -418,7 +500,7 @@
               <label for="select-poster" class="block text-xs font-bold text-slate-700 mb-1">
                 Selecciona el E-Póster <span class="text-rose-500">*</span>
               </label>
-              <select id="select-poster" required onchange="onPosterSelected()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+              <select id="select-poster" required onchange="onPosterSelected()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Selecciona el trabajo científico a acreditar de entre los 56 oficiales">
                 <option value="">-- Elige un póster de la lista (56 disponibles) --</option>
               </select>
             </div>
@@ -467,7 +549,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                   <i data-lucide="user" class="w-4 h-4"></i>
                 </div>
-                <input type="text" id="ponente-nombre" required placeholder="Ej: Dr. Alejandro Ramos / Dra. Mariana Colmenárez" class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                <input type="text" id="ponente-nombre" required placeholder="Ej: Dr. Alejandro Ramos / Dra. Mariana Colmenárez" class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Nombre y apellido completo del ponente oficial (se reflejará en el certificado)">
               </div>
             </div>
 
@@ -480,7 +562,7 @@
                   <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                     <i data-lucide="stethoscope" class="w-4 h-4"></i>
                   </div>
-                  <input type="text" id="ponente-especialidad" list="lista-especialidades" required placeholder="Ej: Anestesiología, Cirugía..." class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                  <input type="text" id="ponente-especialidad" list="lista-especialidades" required placeholder="Ej: Anestesiología, Cirugía..." class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Especialidad o departamento médico del HCUAMP al que pertenece el trabajo">
                   <datalist id="lista-especialidades">
                     <!-- Poblado dinámicamente -->
                   </datalist>
@@ -495,7 +577,7 @@
                   <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                     <i data-lucide="phone" class="w-4 h-4"></i>
                   </div>
-                  <input type="tel" id="ponente-telefono" required placeholder="Ej: 0414-1234567 / +58 412..." class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                  <input type="tel" id="ponente-telefono" required placeholder="Ej: 0414-1234567 / +58 412..." class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Teléfono o WhatsApp de contacto directo del ponente">
                 </div>
               </div>
             </div>
@@ -508,7 +590,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                   <i data-lucide="mail" class="w-4 h-4"></i>
                 </div>
-                <input type="email" id="ponente-email" required placeholder="ponente@gmail.com / ucla.edu.ve" class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+                <input type="email" id="ponente-email" required placeholder="ponente@gmail.com / ucla.edu.ve" class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Correo electrónico donde se enviará automáticamente el Certificado Oficial">
               </div>
             </div>
           </div>
@@ -527,7 +609,7 @@
             <div class="rounded-xl border border-slate-200 p-4 space-y-3 bg-slate-50/50">
               <div class="flex items-center justify-between">
                 <label class="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" id="check-acomp1" onchange="toggleAcompFields(1)" class="w-4 h-4 text-pineda-surgical rounded focus:ring-pineda-surgical border-slate-300">
+                  <input type="checkbox" id="check-acomp1" onchange="toggleAcompFields(1)" class="w-4 h-4 text-pineda-surgical rounded focus:ring-pineda-surgical border-slate-300" title="Activar registro del primer coautor o acompañante">
                   <span class="text-xs font-bold text-slate-800">Registrar Acompañante 1</span>
                 </label>
                 <span class="text-[11px] text-slate-500">+1 persona al aforo</span>
@@ -536,11 +618,11 @@
               <div id="fields-acomp1" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div>
                   <label for="acomp1-nombre" class="block text-[11px] font-bold text-slate-600 mb-1">Nombre Completo</label>
-                  <input type="text" id="acomp1-nombre" placeholder="Nombre del acompañante" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20">
+                  <input type="text" id="acomp1-nombre" placeholder="Nombre del acompañante" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20" title="Nombre completo del acompañante o coautor 1">
                 </div>
                 <div>
                   <label for="acomp1-cedula" class="block text-[11px] font-bold text-slate-600 mb-1">Cédula / Documento de Identidad</label>
-                  <input type="text" id="acomp1-cedula" placeholder="Ej: V-12.345.678" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20">
+                  <input type="text" id="acomp1-cedula" placeholder="Ej: V-12.345.678" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20" title="Cédula de identidad oficial del acompañante 1">
                 </div>
               </div>
             </div>
@@ -549,7 +631,7 @@
             <div class="rounded-xl border border-slate-200 p-4 space-y-3 bg-slate-50/50">
               <div class="flex items-center justify-between">
                 <label class="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" id="check-acomp2" onchange="toggleAcompFields(2)" class="w-4 h-4 text-pineda-surgical rounded focus:ring-pineda-surgical border-slate-300">
+                  <input type="checkbox" id="check-acomp2" onchange="toggleAcompFields(2)" class="w-4 h-4 text-pineda-surgical rounded focus:ring-pineda-surgical border-slate-300" title="Activar registro del segundo coautor o acompañante">
                   <span class="text-xs font-bold text-slate-800">Registrar Acompañante 2</span>
                 </label>
                 <span class="text-[11px] text-slate-500">+1 persona al aforo</span>
@@ -581,12 +663,12 @@
 
           <!-- BOTÓN DE ENVÍO -->
           <div class="pt-4">
-            <button type="submit" id="btn-submit-attendance" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-pineda-deep via-pineda-surgical to-pineda-teal text-white font-bold text-sm shadow-lg hover:shadow-xl active:scale-[0.99] transition flex items-center justify-center space-x-2">
+            <button type="submit" id="btn-submit-attendance" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-pineda-deep via-pineda-surgical to-pineda-teal text-white font-bold text-sm shadow-lg hover:shadow-xl active:scale-[0.99] transition flex items-center justify-center space-x-2" title="Confirmar y registrar la asistencia presencial del ponente oficial">
               <i data-lucide="check-circle-2" class="w-5 h-5"></i>
               <span>Confirmar y Guardar Asistencia</span>
             </button>
             <p class="text-[11px] text-center text-slate-400 mt-2">
-              Los datos se sincronizan con Google Sheets de forma segura con soporte offline.
+              Los datos se transmiten al Servidor Central Institucional de forma segura con respaldo automático y soporte offline.
             </p>
           </div>
 
@@ -596,8 +678,8 @@
 
     </section>
 
-    <!-- ==================== VISTA 3: SPREADSHEET INTERACTIVO ==================== -->
-    <section id="view-spreadsheet" class="tab-content space-y-6">
+    <!-- ==================== VISTA 3: PLANILLA OFICIAL TRANSACCIONAL ==================== -->
+    <section id="view-planilla" class="tab-content space-y-6">
       
       <!-- Controles y Filtros de la Tabla -->
       <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-4">
@@ -613,12 +695,12 @@
 
           <!-- Botones de Acción (Exportar) -->
           <div class="flex items-center space-x-2">
-            <button onclick="exportTableToCSV()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95">
+            <button onclick="exportTableToCSV()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95" title="Descargar matriz transaccional de asistencias en formato CSV estándar">
               <i data-lucide="download" class="w-4 h-4 text-pineda-surgical"></i>
               <span>Exportar CSV</span>
             </button>
-            <button onclick="exportTableToExcel()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95">
-              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+            <button onclick="exportTableToExcel()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95" title="Descargar planilla oficial con formato compatible con Microsoft Excel">
+              <i data-lucide="table-2" class="w-4 h-4"></i>
               <span>Exportar Excel</span>
             </button>
           </div>
@@ -632,12 +714,12 @@
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
               <i data-lucide="search" class="w-4 h-4"></i>
             </div>
-            <input type="text" id="table-search-input" oninput="renderSpreadsheetTable()" placeholder="Buscar por ponente, título, ID, especialidad..." class="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:bg-white focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+            <input type="text" id="table-search-input" oninput="renderAttendanceTable()" placeholder="Buscar por ponente, título, ID, especialidad..." class="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:bg-white focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Filtrar por ponente, título de investigación, ID oficial o servicio médico">
           </div>
 
           <!-- Filtro Estado -->
           <div>
-            <select id="table-filter-estado" onchange="renderSpreadsheetTable()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:bg-white focus:border-pineda-surgical focus:outline-none transition font-semibold text-slate-700">
+            <select id="table-filter-estado" onchange="renderAttendanceTable()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:bg-white focus:border-pineda-surgical focus:outline-none transition font-semibold text-slate-700" title="Filtrar registros por estado de asistencia">
               <option value="TODOS">Estado: Todos</option>
               <option value="PRESENTE">Solo Presentes (Quórum)</option>
               <option value="PENDIENTE">Solo Pendientes</option>
@@ -646,7 +728,7 @@
 
           <!-- Filtro Salón -->
           <div>
-            <select id="table-filter-salon" onchange="renderSpreadsheetTable()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:bg-white focus:border-pineda-surgical focus:outline-none transition font-semibold text-slate-700">
+            <select id="table-filter-salon" onchange="renderAttendanceTable()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:bg-white focus:border-pineda-surgical focus:outline-none transition font-semibold text-slate-700" title="Filtrar registros por salón de defensa">
               <option value="TODOS">Salón: Todos</option>
               <option value="Salón 1">Salón 1 (Principal)</option>
               <option value="Salón 2">Salón 2 (Paralelo)</option>
@@ -673,7 +755,7 @@
                 <th class="py-3 px-3.5 text-center min-w-[120px]">Acciones</th>
               </tr>
             </thead>
-            <tbody id="spreadsheet-tbody" class="divide-y divide-slate-100 text-slate-700">
+            <tbody id="planilla-tbody" class="divide-y divide-slate-100 text-slate-700">
               <!-- Renderizado Dinámico -->
             </tbody>
           </table>
@@ -704,16 +786,16 @@
 
           <!-- Selector de Franja de Horario -->
           <div class="flex items-center space-x-2">
-            <button onclick="filterCatalogByTime('ALL')" class="catalog-time-filter active px-3 py-1.5 rounded-lg text-xs font-bold bg-pineda-deep text-white transition" data-time="ALL">
+            <button onclick="filterCatalogByTime('ALL')" class="catalog-time-filter active px-3 py-1.5 rounded-lg text-xs font-bold bg-pineda-deep text-white transition" data-time="ALL" title="Mostrar todos los bloques de horario (11:00 AM – 06:00 PM)">
               Todos
             </button>
-            <button onclick="filterCatalogByTime('11-13')" class="catalog-time-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-time="11-13">
+            <button onclick="filterCatalogByTime('11-13')" class="catalog-time-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-time="11-13" title="Filtrar trabajos del bloque matutino: 11:00 AM a 01:00 PM">
               11:00 AM – 01:00 PM
             </button>
-            <button onclick="filterCatalogByTime('13-15')" class="catalog-time-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-time="13-15">
+            <button onclick="filterCatalogByTime('13-15')" class="catalog-time-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-time="13-15" title="Filtrar trabajos del primer bloque vespertino: 01:00 PM a 03:00 PM">
               01:00 PM – 03:00 PM
             </button>
-            <button onclick="filterCatalogByTime('15-18')" class="catalog-time-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-time="15-18">
+            <button onclick="filterCatalogByTime('15-18')" class="catalog-time-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-time="15-18" title="Filtrar trabajos del bloque de cierre: 03:00 PM a 06:00 PM">
               03:00 PM – 06:00 PM
             </button>
           </div>
@@ -732,61 +814,67 @@
       
       <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8 space-y-6">
         
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
-            <i data-lucide="sliders" class="w-5 h-5 text-pineda-deep"></i>
-            <span>Configuración de Conectividad</span>
-          </h2>
-          <p class="text-xs text-slate-500">Conexión Serverless entre Vercel y Google Apps Script</p>
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+              <i data-lucide="server" class="w-5 h-5 text-pineda-deep"></i>
+              <span>Centro de Conexión Institucional</span>
+            </h2>
+            <p class="text-xs text-slate-500">Enlace directo con el Servidor Central de Gestión de Asistencia y Quórum</p>
+          </div>
+          <button onclick="lockConfigSession()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 shadow-sm" title="Bloquear el panel de configuración para proteger los parámetros del sistema">
+            <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+            <span>Bloquear Acceso</span>
+          </button>
         </div>
 
         <div class="space-y-4">
           
           <div>
             <label for="api-url-input" class="block text-xs font-bold text-slate-700 mb-1">
-              URL del Web App de Google Apps Script (doGet/doPost)
+              Dirección del Servidor Central Institucional
             </label>
-            <input type="url" id="api-url-input" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono bg-white focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition">
+            <input type="url" id="api-url-input" placeholder="https://servidor-central.hcuamp.gob.ve/api/asistencia (o endpoint configurado)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono bg-white focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Dirección web del servicio central de recepción de asistencias y quórum">
             <p class="text-[11px] text-slate-400 mt-1">
-              Despliega el script en tu hoja de Google Sheets ID: <code class="text-pineda-deep font-bold">1WcUhQ5DaZbiiKY0HWnj9uUR5_TQ9cpy8TTWNNV0sXKI</code>.
+              Parámetro gestionado automáticamente mediante las variables de entorno institucionales (<code class="text-pineda-deep font-bold">config.js</code>). Puedes ingresar un enlace de servicio alternativo si es necesario.
             </p>
           </div>
 
           <div class="flex items-center space-x-3">
-            <button onclick="saveAndTestApiUrl()" class="px-4 py-2.5 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95">
+            <button onclick="saveAndTestApiUrl()" class="px-4 py-2.5 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95" title="Verificar conectividad bidireccional y guardar enlace institucional">
               <i data-lucide="plug-zap" class="w-4 h-4"></i>
-              <span>Probar y Guardar Conexión</span>
+              <span>Verificar y Vincular Servidor</span>
             </button>
-            <button onclick="useDemoMode()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition active:scale-95">
-              <span>Restablecer Modo Demo</span>
+            <button onclick="useDemoMode()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition active:scale-95" title="Activar modo local independiente para operar sin conexión al servidor central">
+              <span>Restablecer Modo Autónomo</span>
             </button>
           </div>
 
           <!-- Cola Offline Status -->
           <div class="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-slate-800">Cola de Registros Offline:</span>
-              <span id="config-queue-count" class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-200 text-slate-700">0 pendientes</span>
+              <span class="text-xs font-bold text-slate-800">Cola de Transmisión Local:</span>
+              <span id="config-queue-count" class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-200 text-slate-700">0 pendientes de transmisión</span>
             </div>
             <p class="text-[11px] text-slate-500">
-              Registros guardados en el navegador pendientes de enviar a Google Sheets.
+              Registros almacenados localmente pendientes de transmisión al Servidor Central.
             </p>
-            <button onclick="syncOfflineQueue()" class="text-xs font-bold text-pineda-surgical hover:underline flex items-center space-x-1">
+            <button onclick="syncOfflineQueue()" class="text-xs font-bold text-pineda-surgical hover:underline flex items-center space-x-1" title="Transmitir inmediatamente los registros acumulados en cola">
               <i data-lucide="arrow-up-circle" class="w-3.5 h-3.5"></i>
-              <span>Procesar Cola Ahora</span>
+              <span>Transmitir Registros Ahora</span>
             </button>
           </div>
 
           <!-- Respaldo de Datos Locales -->
           <div class="rounded-xl border border-slate-200 p-4 space-y-2">
-            <span class="text-xs font-bold text-slate-800">Respaldo y Auditoría Local:</span>
+            <span class="text-xs font-bold text-slate-800">Respaldo y Auditoría Institucional:</span>
             <p class="text-[11px] text-slate-500">Descarga una copia completa de seguridad en formato JSON de todas las asistencias registradas.</p>
             <div class="flex items-center space-x-2 pt-1">
-              <button onclick="downloadLocalBackup()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center space-x-1">
+              <button onclick="downloadLocalBackup()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center space-x-1" title="Descargar archivo JSON con el respaldo íntegro de auditoría local">
                 <i data-lucide="download" class="w-3.5 h-3.5"></i>
                 <span>Descargar Backup JSON</span>
               </button>
-              <button onclick="clearLocalCache()" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center space-x-1">
+              <button onclick="clearLocalCache()" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center space-x-1" title="Restablecer caché temporal y datos almacenados localmente">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 <span>Limpiar Caché Local</span>
               </button>
@@ -835,11 +923,11 @@
       
       <!-- Encabezado Credencial Institucional -->
       <div class="bg-gradient-to-r from-pineda-navy via-pineda-deep to-pineda-surgical text-white p-5 text-center relative">
-        <button onclick="closeCredentialModal()" class="no-print absolute top-3 right-3 text-white/70 hover:text-white p-1 rounded-full bg-white/10">
+        <button onclick="closeCredentialModal()" class="no-print absolute top-3 right-3 text-white/70 hover:text-white p-1 rounded-full bg-white/10" title="Cerrar credencial">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
-        <div class="w-12 h-12 mx-auto bg-white p-1 rounded-xl shadow-md mb-2">
-          <img src="assets/logo.png" alt="Logo" class="w-full h-full object-contain">
+        <div class="h-14 sm:h-16 w-auto max-w-[220px] mx-auto bg-white/95 px-4 py-1.5 rounded-2xl shadow-md mb-2 flex items-center justify-center">
+          <img src="assets/logo.png" alt="Congreso Pineda 2026" class="h-full w-auto max-h-12 object-contain">
         </div>
         <div class="text-[10px] font-bold tracking-widest uppercase text-pineda-turquoise">Hospital Central Universitario Dr. Antonio María Pineda</div>
         <h3 class="text-base font-extrabold text-white">XIV CONGRESO PINEDA 2026</h3>
@@ -892,16 +980,16 @@
         <!-- Botones de Acción -->
         <div class="no-print pt-2 space-y-2">
           <div class="flex items-center space-x-2">
-            <button onclick="window.print()" class="flex-1 py-2.5 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow transition">
+            <button onclick="window.print()" class="flex-1 py-2.5 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow transition" title="Imprimir credencial física de acreditación">
               <i data-lucide="printer" class="w-4 h-4"></i>
               <span>Imprimir Credencial</span>
             </button>
-            <button onclick="closeCredentialModal()" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+            <button onclick="closeCredentialModal()" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition" title="Cerrar credencial">
               <span>Cerrar</span>
             </button>
           </div>
           
-          <button onclick="openCertificateFromCredential()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-pineda-deep via-pineda-surgical to-pineda-teal text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow-md hover:shadow-lg transition">
+          <button onclick="openCertificateFromCredential()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-pineda-deep via-pineda-surgical to-pineda-teal text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow-md hover:shadow-lg transition" title="Generar e imprimir el Certificado Oficial en tamaño carta (11 x 8.5 in) o enviar por correo">
             <i data-lucide="award" class="w-4 h-4"></i>
             <span>Ver y Enviar Certificado Oficial (11 x 8.5 in)</span>
           </button>
@@ -925,19 +1013,19 @@
 
         <div class="flex items-center space-x-2">
           <!-- Botón Enviar por Correo -->
-          <button id="btn-cert-send-email" onclick="sendCurrentCertificateEmail()" class="px-3.5 py-2 rounded-xl bg-pineda-surgical hover:bg-pineda-deep text-white text-xs font-bold transition flex items-center space-x-1.5 shadow active:scale-95">
+          <button id="btn-cert-send-email" onclick="sendCurrentCertificateEmail()" class="px-3.5 py-2 rounded-xl bg-pineda-surgical hover:bg-pineda-deep text-white text-xs font-bold transition flex items-center space-x-1.5 shadow active:scale-95" title="Enviar el certificado digital oficial al correo electrónico del ponente registrado">
             <i data-lucide="send" class="w-4 h-4"></i>
             <span id="btn-cert-send-label">Enviar al Correo del Ponente</span>
           </button>
 
           <!-- Botón Imprimir / PDF -->
-          <button onclick="printCertificate()" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition flex items-center space-x-1.5 shadow active:scale-95">
+          <button onclick="printCertificate()" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition flex items-center space-x-1.5 shadow active:scale-95" title="Imprimir certificado oficial en tamaño carta horizontal (11 x 8.5 in) o guardar en PDF">
             <i data-lucide="printer" class="w-4 h-4"></i>
             <span>Imprimir / Guardar PDF</span>
           </button>
 
           <!-- Cerrar -->
-          <button onclick="closeCertificateModal()" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition">
+          <button onclick="closeCertificateModal()" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition" title="Cerrar vista de certificado">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
@@ -952,8 +1040,8 @@
             <div class="text-center relative">
               <div class="flex items-center justify-between px-6 pt-1">
                 <!-- Isotipo Izquierdo -->
-                <div class="w-16 h-16 rounded-xl bg-white p-1 shadow-sm border border-slate-200 flex items-center justify-center">
-                  <img src="assets/logo.png" alt="Logo HCUAMP" class="w-full h-full object-contain">
+                <div class="h-14 sm:h-16 w-36 sm:w-44 rounded-xl bg-white p-1.5 shadow-sm border border-slate-200 flex items-center justify-center">
+                  <img src="assets/logo.png" alt="Logo XIV Congreso Pineda" class="w-full h-full object-contain">
                 </div>
 
                 <div class="flex-1 text-center px-4">
@@ -1153,8 +1241,8 @@
     <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in duration-200">
       
       <div class="bg-gradient-to-br from-pineda-navy via-pineda-deep to-pineda-surgical text-white p-6 text-center">
-        <div class="w-14 h-14 mx-auto bg-white p-1 rounded-2xl shadow-lg mb-3">
-          <img src="assets/logo.png" alt="Logo" class="w-full h-full object-contain">
+        <div class="h-14 sm:h-16 w-auto max-w-[220px] mx-auto bg-white/95 px-4 py-1.5 rounded-2xl shadow-lg mb-3 flex items-center justify-center">
+          <img src="assets/logo.png" alt="Logo XIV Congreso Pineda" class="h-full w-auto max-h-12 object-contain">
         </div>
         <p class="text-[10px] uppercase tracking-widest text-pineda-turquoise font-bold">República Bolivariana de Venezuela • MPPS</p>
         <h3 class="text-lg font-black text-white">Hospital Central Universitario "Dr. Antonio María Pineda"</h3>
@@ -1187,7 +1275,7 @@
         </div>
 
         <div class="pt-2 text-center">
-          <button onclick="closeCreditsModal()" class="w-full py-2.5 rounded-xl bg-pineda-deep text-white text-xs font-bold hover:bg-pineda-navy transition shadow">
+          <button onclick="closeCreditsModal()" class="w-full py-2.5 rounded-xl bg-pineda-deep text-white text-xs font-bold hover:bg-pineda-navy transition shadow" title="Cerrar ventana de créditos institucionales">
             Cerrar Créditos
           </button>
         </div>
@@ -1196,33 +1284,86 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL: AUTENTICACIÓN PARA CONFIGURACIÓN ==================== -->
+  <div id="config-auth-modal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full shadow-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in duration-200">
+      
+      <div class="bg-gradient-to-r from-pineda-navy via-pineda-deep to-pineda-surgical text-white p-5 text-center relative">
+        <button onclick="cancelConfigAuth()" class="absolute top-3 right-3 text-white/70 hover:text-white p-1 rounded-full bg-white/10" title="Cancelar y volver">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="w-12 h-12 mx-auto bg-white/15 rounded-2xl flex items-center justify-center mb-2 shadow-inner border border-white/20">
+          <i data-lucide="shield-alert" class="w-6 h-6 text-amber-300"></i>
+        </div>
+        <h3 class="text-base font-extrabold text-white">Acceso Restringido</h3>
+        <p class="text-[11px] text-white/80">Centro de Conexión • Seguridad DTIC</p>
+      </div>
+
+      <form id="config-auth-form" onsubmit="handleConfigAuthSubmit(event)" class="p-6 space-y-4">
+        <p class="text-xs text-slate-600 leading-relaxed text-center">
+          Ingresa la contraseña de administración institucional configurada por el <strong>DTIC</strong> para acceder a los parámetros del sistema.
+        </p>
+
+        <div>
+          <label for="config-password-input" class="block text-xs font-bold text-slate-700 mb-1">
+            Contraseña de Seguridad
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+              <i data-lucide="key-round" class="w-4 h-4"></i>
+            </div>
+            <input type="password" id="config-password-input" required placeholder="••••••••" class="w-full pl-9 pr-10 py-2.5 rounded-xl border border-slate-300 text-sm bg-slate-50 focus:bg-white focus:border-pineda-surgical focus:outline-none focus:ring-2 focus:ring-pineda-surgical/20 transition" title="Introduce la clave de administración institucional">
+            <button type="button" onclick="togglePasswordVisibility('config-password-input', 'toggle-pwd-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600" title="Mostrar u ocultar contraseña">
+              <i id="toggle-pwd-icon" data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p id="config-auth-error" class="hidden text-[11px] text-rose-600 font-semibold mt-1.5 flex items-center space-x-1">
+            <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>
+            <span>Contraseña incorrecta. Contacte al personal del DTIC.</span>
+          </p>
+        </div>
+
+        <div class="flex items-center space-x-2 pt-2">
+          <button type="button" onclick="cancelConfigAuth()" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition" title="Cancelar acceso y retornar al Dashboard">
+            Cancelar
+          </button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white text-xs font-bold shadow-md hover:shadow-lg transition flex items-center justify-center space-x-1" title="Verificar contraseña y desbloquear ajustes">
+            <i data-lucide="unlock" class="w-4 h-4"></i>
+            <span>Desbloquear</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
   <!-- ==================== BARRA DE NAVEGACIÓN FLOTANTE (MOBILE FIRST) ==================== -->
   <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass-bottom-bar safe-navbar-bottom">
     <div class="max-w-md mx-auto grid grid-cols-5 h-16">
       
-      <button onclick="navigateToTab('dashboard')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="dashboard">
+      <button onclick="navigateToTab('dashboard')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="dashboard" title="Panel principal de métricas y quórum">
         <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
         <span class="text-[10px] font-semibold">Dashboard</span>
       </button>
 
-      <button onclick="navigateToTab('registro')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="registro">
+      <button onclick="navigateToTab('registro')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="registro" title="Acreditar asistencia del ponente oficial">
         <div class="w-8 h-8 rounded-full bg-pineda-surgical text-white flex items-center justify-center shadow-md -mt-3 mb-0.5 border-2 border-white">
           <i data-lucide="user-check" class="w-4 h-4"></i>
         </div>
         <span class="text-[10px] font-bold text-pineda-deep">Registrar</span>
       </button>
 
-      <button onclick="navigateToTab('catalogo')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="catalogo">
+      <button onclick="navigateToTab('catalogo')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="catalogo" title="Cronograma y catálogo de los 56 trabajos">
         <i data-lucide="book-open" class="w-5 h-5 mb-0.5"></i>
         <span class="text-[10px] font-semibold">Catálogo</span>
       </button>
 
-      <button onclick="navigateToTab('spreadsheet')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="spreadsheet">
+      <button onclick="navigateToTab('planilla')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="planilla" title="Planilla oficial transaccional de asistencia y quórum">
         <i data-lucide="table-2" class="w-5 h-5 mb-0.5"></i>
         <span class="text-[10px] font-semibold">Planilla</span>
       </button>
 
-      <button onclick="navigateToTab('config')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="config">
+      <button onclick="navigateToTab('config')" class="mobile-nav-btn flex flex-col items-center justify-center text-slate-500 hover:text-pineda-surgical active:scale-95 transition" data-tab="config" title="Centro de conexión institucional">
         <i data-lucide="settings" class="w-5 h-5 mb-0.5"></i>
         <span class="text-[10px] font-semibold">Ajustes</span>
       </button>

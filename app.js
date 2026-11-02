@@ -2,7 +2,7 @@
  * =========================================================================
  * APLICACIÓN PRINCIPAL (PWA) - XIV CONGRESO PINEDA
  * Hospital Central Universitario "Dr. Antonio María Pineda" (HCUAMP)
- * Arquitectura Serverless Frontend para Vercel + Backend Google Apps Script
+ * Arquitectura Segura Frontend PWA + Servidor Central Institucional
  * =========================================================================
  */
 
@@ -10,18 +10,19 @@
 const AppState = {
   posters: [],            // 56 trabajos científicos con su estado actual
   attendanceMap: {},      // Mapeo posterId -> datos de asistencia
-  apiUrl: "",             // URL del Web App de Google Apps Script
-  offlineQueue: [],       // Cola de registros pendientes de enviar a Google Sheets
+  apiUrl: "",             // URL del Servidor Central Institucional
+  offlineQueue: [],       // Cola de registros pendientes de transmisión
   activeTab: "dashboard", // Pestaña activa
   catalogFilterTime: "ALL", // Filtro de horario en catálogo
   isOnline: navigator.onLine,
-  isSyncing: false
+  isSyncing: false,
+  isConfigUnlocked: false // Control de acceso con contraseña al Centro de Conexión
 };
 
 // STORAGE KEYS
 const STORAGE_KEYS = {
   ATTENDANCE: "PINEDA_ATTENDANCE_DATA",
-  API_URL: "PINEDA_GAS_API_URL",
+  API_URL: "PINEDA_API_URL",
   OFFLINE_QUEUE: "PINEDA_OFFLINE_QUEUE"
 };
 
@@ -40,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Render inicial de vistas
   updateDashboard();
-  renderSpreadsheetTable();
+  renderAttendanceTable();
   renderCatalogGrid();
   updateSyncIndicator();
 
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("online", handleNetworkOnline);
   window.addEventListener("offline", handleNetworkOffline);
 
-  // Intentar sincronización inicial con Google Apps Script si hay URL
+  // Intentar sincronización inicial con Servidor Central si hay URL
   if (AppState.apiUrl) {
     syncWithBackend(false);
   }
@@ -84,13 +85,15 @@ function initPWA() {
  * Carga configuraciones y persistencia previa desde LocalStorage
  */
 function loadStoredSettings() {
-  // 1. URL de la API
-  const savedApiUrl = localStorage.getItem(STORAGE_KEYS.API_URL);
+  // 1. URL de la API del Servidor Central (desde LocalStorage o variables de entorno window.ENV)
+  const savedApiUrl = localStorage.getItem(STORAGE_KEYS.API_URL) || localStorage.getItem("PINEDA_GAS_API_URL");
   if (savedApiUrl) {
     AppState.apiUrl = savedApiUrl.trim();
-    const input = document.getElementById("api-url-input");
-    if (input) input.value = AppState.apiUrl;
+  } else if (typeof window !== "undefined" && window.ENV && window.ENV.API_ENDPOINT_URL && !window.ENV.API_ENDPOINT_URL.includes("REPLACE_WITH_YOUR_DEPLOYMENT_ID")) {
+    AppState.apiUrl = window.ENV.API_ENDPOINT_URL.trim();
   }
+  const input = document.getElementById("api-url-input");
+  if (input && AppState.apiUrl) input.value = AppState.apiUrl;
 
   // 2. Registros de Asistencia locales
   try {
@@ -113,6 +116,11 @@ function loadStoredSettings() {
     AppState.offlineQueue = [];
   }
   updateQueueCountUI();
+
+  // 4. Estado de Desbloqueo del Centro de Conexión (Sesión activa)
+  if (sessionStorage.getItem("PINEDA_CONFIG_UNLOCKED") === "true") {
+    AppState.isConfigUnlocked = true;
+  }
 }
 
 /**
@@ -153,6 +161,14 @@ function populateSpecialtiesDatalist() {
  * =========================================================================
  */
 function navigateToTab(tabName) {
+  if (tabName === "spreadsheet") tabName = "planilla";
+
+  // Verificación de seguridad institucional: Acceso restringido al Centro de Conexión
+  if (tabName === "config" && !AppState.isConfigUnlocked) {
+    openConfigAuthModal();
+    return;
+  }
+
   AppState.activeTab = tabName;
 
   // Ocultar todas las pestañas
@@ -160,7 +176,7 @@ function navigateToTab(tabName) {
   tabContents.forEach(el => el.classList.remove("active"));
 
   // Mostrar la pestaña seleccionada
-  const targetView = document.getElementById(`view-${tabName}`);
+  const targetView = document.getElementById(`view-${tabName}`) || (tabName === "planilla" ? document.getElementById("view-spreadsheet") : null);
   if (targetView) {
     targetView.classList.add("active");
   }
@@ -168,7 +184,7 @@ function navigateToTab(tabName) {
   // Actualizar estado en barra de navegación inferior (Mobile)
   const mobileBtns = document.querySelectorAll(".mobile-nav-btn");
   mobileBtns.forEach(btn => {
-    const isCurrent = btn.dataset.tab === tabName;
+    const isCurrent = btn.dataset.tab === tabName || (tabName === "planilla" && btn.dataset.tab === "spreadsheet");
     if (isCurrent) {
       btn.classList.add("text-pineda-surgical");
       btn.classList.remove("text-slate-500");
@@ -181,7 +197,7 @@ function navigateToTab(tabName) {
   // Actualizar estado en navegación desktop
   const desktopBtns = document.querySelectorAll(".nav-desktop-btn");
   desktopBtns.forEach(btn => {
-    const isCurrent = btn.dataset.tab === tabName;
+    const isCurrent = btn.dataset.tab === tabName || (tabName === "planilla" && btn.dataset.tab === "spreadsheet");
     if (isCurrent) {
       btn.classList.add("bg-white/20", "text-white");
     } else {
@@ -191,7 +207,7 @@ function navigateToTab(tabName) {
 
   // Acciones contextuales al entrar a una pestaña
   if (tabName === "dashboard") updateDashboard();
-  if (tabName === "spreadsheet") renderSpreadsheetTable();
+  if (tabName === "planilla" || tabName === "spreadsheet") renderAttendanceTable();
   if (tabName === "catalogo") renderCatalogGrid();
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -548,11 +564,11 @@ async function handleAttendanceSubmit(event) {
   poster.estado = "PRESENTE";
   poster.registro = registro;
 
-  // 2. Intentar enviar a Google Apps Script
+  // 2. Intentar transmitir al Servidor Central
   const submitBtn = document.getElementById("btn-submit-attendance");
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i><span>Guardando en Google Sheets...</span>`;
+    submitBtn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i><span>Transmitiendo al Servidor Central...</span>`;
     initLucide();
   }
 
@@ -561,7 +577,7 @@ async function handleAttendanceSubmit(event) {
     try {
       sentSuccessfully = await sendRecordToGAS(registro);
     } catch (e) {
-      console.warn("Fallo al enviar a Google Apps Script, pasando a cola offline:", e);
+      console.warn("Fallo en transmisión central, pasando a cola offline:", e);
       sentSuccessfully = false;
     }
   }
@@ -571,9 +587,9 @@ async function handleAttendanceSubmit(event) {
     AppState.offlineQueue.push(registro);
     localStorage.setItem(STORAGE_KEYS.OFFLINE_QUEUE, JSON.stringify(AppState.offlineQueue));
     updateQueueCountUI();
-    showToast("Guardado localmente. Se enviará a Google Sheets al recuperar conexión.", "info");
+    showToast("Guardado localmente con éxito. Se transmitirá al Servidor Central al recuperar conexión.", "info");
   } else {
-    showToast("¡Asistencia registrada y sincronizada con Google Sheets!", "success");
+    showToast("¡Asistencia registrada y transmitida al Servidor Central exitosamente!", "success");
   }
 
   // 3. Resetear formulario y botón
@@ -589,7 +605,7 @@ async function handleAttendanceSubmit(event) {
   // 4. Actualizar vistas
   filterPostersSelector();
   updateDashboard();
-  renderSpreadsheetTable();
+  renderAttendanceTable();
   renderCatalogGrid();
 
   // 5. Mostrar Credencial Oficial Digital
@@ -598,11 +614,11 @@ async function handleAttendanceSubmit(event) {
 
 /**
  * =========================================================================
- * MÓDULO 3: SPREADSHEET INTERACTIVO (DATA-TABLE)
+ * MÓDULO 3: PLANILLA TRANSACCIONAL DE ASISTENCIA Y QUÓRUM (DATA-TABLE)
  * =========================================================================
  */
-function renderSpreadsheetTable() {
-  const tbody = document.getElementById("spreadsheet-tbody");
+function renderAttendanceTable() {
+  const tbody = document.getElementById("planilla-tbody") || document.getElementById("spreadsheet-tbody");
   if (!tbody) return;
 
   const searchQuery = (document.getElementById("table-search-input")?.value || "").toLowerCase().trim();
@@ -670,18 +686,18 @@ function renderSpreadsheetTable() {
 
     const actions = isPresent && reg
       ? `<div class="flex items-center justify-center space-x-1">
-           <button onclick="openCertificateModal('${p.id}')" class="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 transition" title="Emitir Certificado Oficial (11 x 8.5 in)">
+           <button onclick="openCertificateModal('${p.id}')" class="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 transition" title="Emitir y enviar Certificado Oficial de Participación (11 x 8.5 in)">
              <i data-lucide="award" class="w-4 h-4"></i>
            </button>
-           <button onclick="viewCredentialForPoster('${p.id}')" class="p-1.5 rounded-lg text-pineda-surgical hover:bg-sky-50 transition" title="Ver Credencial">
+           <button onclick="viewCredentialForPoster('${p.id}')" class="p-1.5 rounded-lg text-pineda-surgical hover:bg-sky-50 transition" title="Ver e imprimir Credencial Oficial Digital con QR">
              <i data-lucide="badge-check" class="w-4 h-4"></i>
            </button>
-           <button onclick="revokeAttendance('${p.id}')" class="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 transition" title="Revocar Asistencia">
+           <button onclick="revokeAttendance('${p.id}')" class="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 transition" title="Revocar asistencia registrada para este trabajo">
              <i data-lucide="undo-2" class="w-4 h-4"></i>
            </button>
          </div>`
       : `<div class="flex items-center justify-center">
-           <button onclick="openRegisterForPoster('${p.id}')" class="px-2.5 py-1 rounded-lg bg-pineda-surgical/10 hover:bg-pineda-surgical hover:text-white text-pineda-surgical font-bold text-[11px] transition flex items-center space-x-1">
+           <button onclick="openRegisterForPoster('${p.id}')" class="px-2.5 py-1 rounded-lg bg-pineda-surgical/10 hover:bg-pineda-surgical hover:text-white text-pineda-surgical font-bold text-[11px] transition flex items-center space-x-1" title="Acreditar y registrar asistencia de este ponente">
              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
              <span>Registrar</span>
            </button>
@@ -707,6 +723,9 @@ function renderSpreadsheetTable() {
   tbody.innerHTML = rowsHtml;
   initLucide();
 }
+
+// Alias de retrocompatibilidad
+window.renderSpreadsheetTable = renderAttendanceTable;
 
 /**
  * Revocar asistencia registrada
@@ -735,13 +754,13 @@ async function revokeAttendance(posterId) {
         body: JSON.stringify({ action: "revoke", id_poster: posterId })
       });
     } catch (e) {
-      console.warn("No se pudo notificar revocación a GAS:", e);
+      console.warn("No se pudo notificar revocación al Servidor Central:", e);
     }
   }
 
   showToast("Asistencia revocada. El póster ha retornado a estado PENDIENTE.", "info");
   updateDashboard();
-  renderSpreadsheetTable();
+  renderAttendanceTable();
   renderCatalogGrid();
   filterPostersSelector();
 }
@@ -914,16 +933,16 @@ function renderCatalogGrid() {
 
     const actionBtn = isPresent
       ? `<div class="grid grid-cols-2 gap-2">
-           <button onclick="viewCredentialForPoster('${p.id}')" class="py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition flex items-center justify-center space-x-1">
+           <button onclick="viewCredentialForPoster('${p.id}')" class="py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition flex items-center justify-center space-x-1" title="Ver e imprimir credencial oficial digital con código QR">
              <i data-lucide="badge-check" class="w-3.5 h-3.5 text-emerald-600"></i>
              <span>Credencial</span>
            </button>
-           <button onclick="openCertificateModal('${p.id}')" class="py-2 px-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[11px] border border-amber-200 transition flex items-center justify-center space-x-1">
+           <button onclick="openCertificateModal('${p.id}')" class="py-2 px-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[11px] border border-amber-200 transition flex items-center justify-center space-x-1" title="Generar e imprimir o enviar por correo el Certificado Oficial (11 x 8.5 in)">
              <i data-lucide="award" class="w-3.5 h-3.5 text-amber-600"></i>
              <span>Certificado</span>
            </button>
          </div>`
-      : `<button onclick="openRegisterForPoster('${p.id}')" class="w-full py-2 px-3 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white font-bold text-xs transition flex items-center justify-center space-x-1.5 shadow-sm active:scale-95">
+      : `<button onclick="openRegisterForPoster('${p.id}')" class="w-full py-2 px-3 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white font-bold text-xs transition flex items-center justify-center space-x-1.5 shadow-sm active:scale-95" title="Acreditar formalmente la asistencia presencial para este trabajo científico">
            <i data-lucide="user-plus" class="w-4 h-4"></i>
            <span>Registrar Asistencia</span>
          </button>`;
@@ -1010,12 +1029,12 @@ function filterCatalogByTime(timeKey) {
 
 /**
  * =========================================================================
- * MÓDULO 5: SINCRONIZACIÓN Y COMUNICACIÓN CON GOOGLE APPS SCRIPT
+ * MÓDULO 5: SINCRONIZACIÓN Y COMUNICACIÓN CON SERVIDOR CENTRAL INSTITUCIONAL
  * =========================================================================
  */
 
 /**
- * Envía un registro transaccional hacia el endpoint doPost de GAS
+ * Envía un registro transaccional hacia el endpoint del Servidor Central
  */
 async function sendRecordToGAS(registro) {
   if (!AppState.apiUrl) return false;
@@ -1037,7 +1056,7 @@ async function sendRecordToGAS(registro) {
     dispositivo: registro.dispositivo
   };
 
-  // Google Apps Script Web App soporta peticiones vía POST (mode: no-cors para evitar bloqueo CORS)
+  // Petición POST segura al Servidor Central
   const response = await fetch(AppState.apiUrl, {
     method: "POST",
     mode: "no-cors",
@@ -1051,13 +1070,13 @@ async function sendRecordToGAS(registro) {
 }
 
 /**
- * Sincroniza catálogo y asistencias desde Google Apps Script (doGet: action=getPosters)
+ * Sincroniza catálogo y asistencias desde el Servidor Central (doGet: action=getPosters)
  */
 async function syncWithBackend(isManual = false) {
   if (AppState.isSyncing) return;
   if (!AppState.apiUrl) {
     if (isManual) {
-      showToast("Configura primero la URL de Google Apps Script en Ajustes", "info");
+      showToast("Configura la dirección del Servidor Central en Ajustes", "info");
       navigateToTab("config");
     }
     return;
@@ -1088,12 +1107,12 @@ async function syncWithBackend(isManual = false) {
       await syncOfflineQueue();
 
       updateDashboard();
-      renderSpreadsheetTable();
+      renderAttendanceTable();
       renderCatalogGrid();
       filterPostersSelector();
 
       if (isManual) {
-        showToast("Sincronización completada con Google Sheets", "success");
+        showToast("Sincronización completada con el Servidor Central", "success");
       }
     } else {
       throw new Error(result.error || "Respuesta inválida del servidor");
@@ -1101,7 +1120,7 @@ async function syncWithBackend(isManual = false) {
   } catch (err) {
     console.warn("Aviso de sincronización:", err.message);
     if (isManual) {
-      showToast("No se pudo conectar a Google Sheets. Comprueba tu conexión o URL del script.", "warning");
+      showToast("No se pudo conectar al Servidor Central. Comprueba tu conexión de red.", "warning");
     }
   } finally {
     AppState.isSyncing = false;
@@ -1135,7 +1154,7 @@ async function syncOfflineQueue() {
   updateQueueCountUI();
 
   if (remaining.length === 0) {
-    showToast("¡Todos los registros offline fueron enviados a Google Sheets!", "success");
+    showToast("¡Todos los registros offline fueron transmitidos al Servidor Central!", "success");
   }
 }
 
@@ -1178,7 +1197,7 @@ function updateSyncIndicator(isSpinning = false) {
     label.innerText = "Sincronizando...";
     indicator.className = "flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-500/20 text-sky-300 border border-sky-400/30";
   } else {
-    label.innerText = AppState.apiUrl ? "Online (Sheets)" : "Modo Local";
+    label.innerText = AppState.apiUrl ? "En Línea (Sincronizado)" : "Modo Local";
     indicator.className = "flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-400/30";
   }
 }
@@ -1321,7 +1340,7 @@ function printCertificate() {
 }
 
 /**
- * Enviar Certificado por Correo Electrónico mediante Google Apps Script MailApp
+ * Enviar Certificado Oficial por Correo Electrónico mediante el Servidor Central Institucional
  */
 async function sendCurrentCertificateEmail() {
   if (!currentCertificatePosterId) return;
@@ -1454,11 +1473,11 @@ async function saveAndTestApiUrl() {
   const url = input ? input.value.trim() : "";
 
   if (!url) {
-    showToast("Por favor introduce una URL válida", "warning");
+    showToast("Por favor introduce una dirección válida del Servidor Central", "warning");
     return;
   }
 
-  showToast("Probando conexión con Google Apps Script...", "info");
+  showToast("Verificando enlace con el Servidor Central...", "info");
 
   try {
     const pingUrl = `${url}?action=ping&t=${Date.now()}`;
@@ -1469,29 +1488,30 @@ async function saveAndTestApiUrl() {
     if (data && data.success) {
       AppState.apiUrl = url;
       localStorage.setItem(STORAGE_KEYS.API_URL, url);
-      showToast("¡Conexión establecida con éxito con Google Sheets!", "success");
+      showToast("¡Enlace verificado y establecido con el Servidor Central exitosamente!", "success");
       updateSyncIndicator();
       syncWithBackend(true);
     } else {
-      throw new Error("Respuesta no válida de la API");
+      throw new Error("Respuesta no válida del servidor central");
     }
   } catch (e) {
-    showToast(`Error al conectar: ${e.message}. Verifica los permisos del Web App.`, "error");
+    showToast(`Error al conectar: ${e.message}. Verifica la dirección y permisos del servidor.`, "error");
   }
 }
 
 function useDemoMode() {
   AppState.apiUrl = "";
   localStorage.removeItem(STORAGE_KEYS.API_URL);
+  localStorage.removeItem("PINEDA_GAS_API_URL");
   const input = document.getElementById("api-url-input");
   if (input) input.value = "";
   updateSyncIndicator();
-  showToast("Modo Local / Demo activado.", "info");
+  showToast("Modo Local Autónomo activado.", "info");
 }
 
 function downloadLocalBackup() {
   const data = {
-    version: "1.0",
+    version: "1.2.0",
     congreso: "XIV Congreso Pineda - HCUAMP",
     exportedAt: new Date().toISOString(),
     attendance: AppState.attendanceMap,
@@ -1502,23 +1522,103 @@ function downloadLocalBackup() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `Backup_Congreso_Pineda_${new Date().toISOString().split("T")[0]}.json`;
+  a.download = `Respaldo_Asistencia_Congreso_Pineda_${new Date().toISOString().split("T")[0]}.json`;
   a.click();
-  showToast("Backup local descargado", "success");
+  showToast("Copia de respaldo institucional descargada con éxito", "success");
 }
 
 function clearLocalCache() {
-  if (!confirm("¿Deseas vaciar la caché de asistencias locales? Los datos no sincronizados se perderán.")) return;
+  if (!confirm("¿Deseas vaciar la memoria temporal de asistencias locales? Los datos no sincronizados se perderán.")) return;
   localStorage.removeItem(STORAGE_KEYS.ATTENDANCE);
   localStorage.removeItem(STORAGE_KEYS.OFFLINE_QUEUE);
   AppState.attendanceMap = {};
   AppState.offlineQueue = [];
   initCatalogData();
   updateDashboard();
-  renderSpreadsheetTable();
+  renderAttendanceTable();
   renderCatalogGrid();
   updateQueueCountUI();
-  showToast("Caché local reiniciada", "info");
+  showToast("Memoria temporal local reiniciada", "info");
+}
+
+/**
+ * =========================================================================
+ * AUTENTICACIÓN INSTITUCIONAL PARA CENTRO DE CONEXIÓN
+ * =========================================================================
+ */
+function openConfigAuthModal() {
+  const modal = document.getElementById("config-auth-modal");
+  const input = document.getElementById("config-password-input");
+  const errorMsg = document.getElementById("config-auth-error");
+  if (errorMsg) errorMsg.classList.add("hidden");
+  if (input) {
+    input.value = "";
+    input.classList.remove("border-rose-500", "bg-rose-50");
+    setTimeout(() => input.focus(), 150);
+  }
+  if (modal) {
+    modal.classList.remove("hidden");
+    initLucide();
+  }
+}
+
+function closeConfigAuthModal() {
+  const modal = document.getElementById("config-auth-modal");
+  if (modal) modal.classList.add("hidden");
+}
+
+function cancelConfigAuth() {
+  closeConfigAuthModal();
+  // Retornar a dashboard o pestaña previa distinta de config
+  const prevTab = (AppState.activeTab && AppState.activeTab !== "config") ? AppState.activeTab : "dashboard";
+  navigateToTab(prevTab);
+}
+
+function handleConfigAuthSubmit(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById("config-password-input");
+  const errorMsg = document.getElementById("config-auth-error");
+  const entered = input ? input.value.trim() : "";
+
+  // Clave autorizada desde window.ENV.ADMIN_PASSWORD
+  const expected = (typeof window !== "undefined" && window.ENV && window.ENV.ADMIN_PASSWORD) ? String(window.ENV.ADMIN_PASSWORD).trim() : "PINEDA2026";
+
+  if (entered === expected) {
+    AppState.isConfigUnlocked = true;
+    sessionStorage.setItem("PINEDA_CONFIG_UNLOCKED", "true");
+    closeConfigAuthModal();
+    showToast("Acceso autorizado al Centro de Conexión Institucional", "success");
+    navigateToTab("config");
+  } else {
+    if (errorMsg) errorMsg.classList.remove("hidden");
+    if (input) {
+      input.classList.add("border-rose-500", "bg-rose-50");
+      input.select();
+      input.focus();
+    }
+    showToast("Contraseña incorrecta. Acceso restringido.", "error");
+  }
+}
+
+function lockConfigSession() {
+  AppState.isConfigUnlocked = false;
+  sessionStorage.removeItem("PINEDA_CONFIG_UNLOCKED");
+  showToast("Centro de Conexión bloqueado.", "info");
+  navigateToTab("dashboard");
+}
+
+function togglePasswordVisibility(inputId, iconId) {
+  const input = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+  if (!input) return;
+  if (input.type === "password") {
+    input.type = "text";
+    if (icon) icon.setAttribute("data-lucide", "eye-off");
+  } else {
+    input.type = "password";
+    if (icon) icon.setAttribute("data-lucide", "eye");
+  }
+  initLucide();
 }
 
 /**
