@@ -56,3 +56,14 @@ Este paso crea automáticamente las pestañas con estilo corporativo y carga los
 3. Pega la URL de Apps Script en el campo **URL de la API de Google Apps Script**.
 4. Haz clic en **Probar Conexión y Guardar**.
 5. ¡Listo! La PWA quedará sincronizada en tiempo real con Google Sheets. Si estás sin conexión Wi-Fi, la PWA guardará los registros localmente y los subirá automáticamente cuando vuelvas a tener red.
+
+---
+
+## ✉️ Paso 5: Emisión de Certificados Digitales (Servicio MailApp)
+El script incluye la función `handleSendCertificateEmail` que envía directamente al correo del ponente el **Certificado Oficial de Participación** con diseño institucional y las 3 firmas digitales autorizadas:
+- **Dra. Adriana Barreto** (Presidenta del Comité Organizador del XIV Congreso Pineda Año 2026).
+- **Dra. Linda Amaro** (Directora General del HCUAMP).
+- **Dra. Marisol Balabú** (Directora Adjunta de Investigación y Docencia del HCUAMP).
+
+Al autorizar la ejecución por primera vez en Apps Script, Google solicitará permisos para enviar correos en tu nombre a través del servicio nativo `MailApp`. Esto permite que la PWA despache los diplomas con solo presionar el botón "Enviar al Correo del Ponente".
+

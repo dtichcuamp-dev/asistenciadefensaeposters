@@ -113,10 +113,13 @@ function doPost(e) {
     } else if (action === "revoke") {
       const result = handleRevokeAttendance(payload);
       return createJsonResponse(result);
+    } else if (action === "sendCertificateEmail") {
+      const result = handleSendCertificateEmail(payload);
+      return createJsonResponse(result);
     } else {
       return createJsonResponse({
         success: false,
-        error: "Acción no reconocida. Acciones válidas: 'register', 'revoke'"
+        error: "Acción no reconocida. Acciones válidas: 'register', 'revoke', 'sendCertificateEmail'"
       });
     }
 
@@ -420,6 +423,185 @@ function handleRevokeAttendance(payload) {
     success: true,
     message: "Asistencia del póster " + posterId + " revocada exitosamente."
   };
+}
+
+/**
+ * ENVÍO DEL CERTIFICADO OFICIAL POR CORREO ELECTRÓNICO (MailApp)
+ * Incluye las 3 firmas digitales institucionales requeridas:
+ * 1. Dra. Adriana Barreto (Presidenta del Comité Organizador del XIV Congreso Pineda Año 2026)
+ * 2. Dra. Linda Amaro (Directora General del Hospital Central Universitario Dr. Antonio María Pineda)
+ * 3. Dra. Marisol Balabú (Directora Adjunta de Investigación y Docencia del HCUAMP)
+ */
+function handleSendCertificateEmail(payload) {
+  const posterId = String(payload.id_poster || payload.posterId || "").trim();
+  let email = String(payload.email || "").trim();
+  let nombrePonente = String(payload.nombre_ponente || payload.nombrePonente || "").trim();
+  let tituloPoster = String(payload.titulo_poster || payload.tituloPoster || "").trim();
+  let salon = String(payload.salon || "Salón 1").trim();
+  let diaHora = String(payload.dia_hora || payload.diaHora || "").trim();
+  let especialidad = String(payload.especialidad || "").trim();
+
+  // Si no se proporcionaron datos completos, buscarlos en la hoja de Registro
+  const ss = getSpreadsheet();
+  const registroSheet = ss.getSheetByName(SHEET_NAMES.REGISTRO);
+  
+  if (registroSheet && posterId) {
+    const data = registroSheet.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][1]).trim() === posterId && String(data[i][15]).trim().toUpperCase() === "PRESENTE") {
+        if (!email) email = String(data[i][7] || "").trim();
+        if (!nombrePonente) nombrePonente = String(data[i][5] || "").trim();
+        if (!tituloPoster) tituloPoster = String(data[i][4] || "").trim();
+        if (!salon) salon = String(data[i][2] || "").trim();
+        if (!diaHora) diaHora = String(data[i][3] || "").trim();
+        if (!especialidad) especialidad = String(data[i][6] || "").trim();
+        break;
+      }
+    }
+  }
+
+  if (!email || email.indexOf("@") === -1) {
+    return {
+      success: false,
+      message: "No se encontró una dirección de correo electrónico válida para el ponente."
+    };
+  }
+
+  const subject = "🏅 Certificado Oficial de Ponente - XIV Congreso Pineda (HCUAMP)";
+  const fechaEmision = Utilities.formatDate(new Date(), "GMT-4", "dd 'de' MMMM 'de' yyyy");
+  const codigoCertificado = "CERT-PINEDA-2026-" + posterId;
+
+  // Plantilla HTML del Certificado Digital para Correo
+  const htmlBody = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
+        .cert-card { max-width: 720px; margin: 0 auto; background: #ffffff; border: 8px solid #004c87; border-radius: 12px; padding: 36px 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+        .header { text-align: center; border-bottom: 2px solid #00a8b5; padding-bottom: 18px; margin-bottom: 24px; }
+        .inst-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #64748b; font-weight: bold; margin: 0; }
+        .cong-title { font-size: 22px; font-weight: 800; color: #004c87; margin: 6px 0 2px 0; }
+        .sub-title { font-size: 13px; color: #008c99; font-weight: 600; margin: 0; }
+        .cert-badge { display: inline-block; background: #0070ba; color: #ffffff; font-size: 12px; font-weight: bold; padding: 6px 16px; border-radius: 20px; margin: 18px 0; letter-spacing: 1px; }
+        .grant-text { font-size: 14px; color: #475569; text-align: center; margin: 0 0 10px 0; }
+        .recipient-name { font-size: 24px; font-weight: 800; color: #002d54; text-align: center; margin: 5px 0 18px 0; text-transform: uppercase; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px; }
+        .participation-text { font-size: 13px; line-height: 1.6; text-align: center; color: #334155; margin: 0 20px 24px 20px; }
+        .poster-title { font-weight: 700; color: #004c87; font-style: italic; }
+        .details-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 18px; margin: 0 10px 28px 10px; font-size: 12px; }
+        .details-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .details-label { font-weight: bold; color: #64748b; }
+        .details-val { font-weight: 600; color: #0f172a; }
+        .signatures-grid { width: 100%; margin-top: 32px; border-top: 1px solid #e2e8f0; padding-top: 24px; }
+        .sig-col { width: 33.33%; text-align: center; vertical-align: top; padding: 0 8px; }
+        .sig-line { width: 85%; margin: 0 auto 8px auto; border-top: 1.5px solid #004c87; }
+        .sig-name { font-size: 11px; font-weight: bold; color: #0f172a; margin: 0; line-height: 1.2; }
+        .sig-title { font-size: 9px; color: #64748b; margin-top: 3px; line-height: 1.3; }
+        .footer { text-align: center; font-size: 10px; color: #94a3b8; margin-top: 28px; padding-top: 14px; border-top: 1px dashed #e2e8f0; }
+      </style>
+    </head>
+    <body>
+      <div class="cert-card">
+        <div class="header">
+          <p class="inst-title">República Bolivariana de Venezuela • MPPS</p>
+          <p class="inst-title">Hospital Central Universitario "Dr. Antonio María Pineda" (HCUAMP)</p>
+          <h1 class="cong-title">XIV CONGRESO PINEDA</h1>
+          <p class="sub-title">Jornada Científica de Evaluación de E-Pósters • Año 2026</p>
+        </div>
+
+        <div style="text-align: center;">
+          <div class="cert-badge">CERTIFICADO OFICIAL DE PARTICIPACIÓN</div>
+        </div>
+
+        <p class="grant-text">El Comité Científico y Académico del XIV Congreso Pineda hace constar que:</p>
+        
+        <div class="recipient-name">${nombrePonente}</div>
+
+        <p class="participation-text">
+          Participó con éxito en calidad de <strong>PONENTE OFICIAL</strong> en la defensa y presentación del trabajo científico titulado:<br>
+          <span class="poster-title">"${tituloPoster}"</span>
+        </p>
+
+        <div class="details-box">
+          <table width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+            <tr>
+              <td style="padding: 3px 0; color: #64748b; font-weight: bold;">ID Póster / Código:</td>
+              <td style="padding: 3px 0; color: #004c87; font-weight: bold; text-align: right;">${posterId}</td>
+            </tr>
+            <tr>
+              <td style="padding: 3px 0; color: #64748b; font-weight: bold;">Salón y Sesión:</td>
+              <td style="padding: 3px 0; color: #0f172a; text-align: right;">${salon} (${diaHora})</td>
+            </tr>
+            <tr>
+              <td style="padding: 3px 0; color: #64748b; font-weight: bold;">Especialidad Médica:</td>
+              <td style="padding: 3px 0; color: #0f172a; text-align: right;">${especialidad || 'Área Clínica'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 3px 0; color: #64748b; font-weight: bold;">Código de Validación:</td>
+              <td style="padding: 3px 0; font-family: monospace; color: #008c99; font-weight: bold; text-align: right;">${codigoCertificado}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 3 FIRMAS DIGITALES INSTITUCIONALES -->
+        <table class="signatures-grid" cellspacing="0" cellpadding="0">
+          <tr>
+            <!-- Firma 1: Dra. Adriana Barreto -->
+            <td class="sig-col">
+              <div style="font-family: 'Brush Script MT', cursive, serif; font-size: 20px; color: #004c87; margin-bottom: 4px;">A. Barreto</div>
+              <div class="sig-line"></div>
+              <p class="sig-name">Dra. Adriana Barreto</p>
+              <p class="sig-title">Presidenta del Comité Organizador<br>XIV Congreso Pineda Año 2026</p>
+            </td>
+
+            <!-- Firma 2: Dra. Linda Amaro -->
+            <td class="sig-col">
+              <div style="font-family: 'Brush Script MT', cursive, serif; font-size: 20px; color: #004c87; margin-bottom: 4px;">L. Amaro</div>
+              <div class="sig-line"></div>
+              <p class="sig-name">Dra. Linda Amaro</p>
+              <p class="sig-title">Directora General<br>HCU "Dr. Antonio María Pineda"</p>
+            </td>
+
+            <!-- Firma 3: Dra. Marisol Balabú -->
+            <td class="sig-col">
+              <div style="font-family: 'Brush Script MT', cursive, serif; font-size: 20px; color: #004c87; margin-bottom: 4px;">M. Balabú</div>
+              <div class="sig-line"></div>
+              <p class="sig-name">Dra. Marisol Balabú</p>
+              <p class="sig-title">Directora Adjunta de Investigación y Docencia<br>HCU "Dr. Antonio María Pineda"</p>
+            </td>
+          </tr>
+        </table>
+
+        <div class="footer">
+          <p>Barquisimeto, Estado Lara • Expedido electrónicamente el ${fechaEmision}</p>
+          <p>Diseño y Desarrollo Tecnológico: <strong>Departamento de Tecnología, Información y Comunicación (DTIC) - HCUAMP</strong></p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  try {
+    MailApp.sendEmail({
+      to: email,
+      subject: subject,
+      htmlBody: htmlBody,
+      name: "XIV Congreso Pineda - HCUAMP"
+    });
+
+    return {
+      success: true,
+      message: "Certificado oficial enviado con éxito a la dirección: " + email,
+      recipient: email,
+      posterId: posterId
+    };
+  } catch (mailErr) {
+    return {
+      success: false,
+      message: "Error al enviar el correo con MailApp: " + mailErr.message
+    };
+  }
 }
 
 /**
