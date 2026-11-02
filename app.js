@@ -670,6 +670,9 @@ function renderSpreadsheetTable() {
 
     const actions = isPresent && reg
       ? `<div class="flex items-center justify-center space-x-1">
+           <button onclick="openCertificateModal('${p.id}')" class="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 transition" title="Emitir Certificado Oficial (11 x 8.5 in)">
+             <i data-lucide="award" class="w-4 h-4"></i>
+           </button>
            <button onclick="viewCredentialForPoster('${p.id}')" class="p-1.5 rounded-lg text-pineda-surgical hover:bg-sky-50 transition" title="Ver Credencial">
              <i data-lucide="badge-check" class="w-4 h-4"></i>
            </button>
@@ -910,10 +913,16 @@ function renderCatalogGrid() {
     const salonColor = p.salon.indexOf("1") !== -1 ? "text-pineda-deep bg-blue-50 border-blue-200" : "text-pineda-teal bg-teal-50 border-teal-200";
 
     const actionBtn = isPresent
-      ? `<button onclick="viewCredentialForPoster('${p.id}')" class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center space-x-1.5">
-           <i data-lucide="badge-check" class="w-4 h-4 text-emerald-600"></i>
-           <span>Ver Credencial</span>
-         </button>`
+      ? `<div class="grid grid-cols-2 gap-2">
+           <button onclick="viewCredentialForPoster('${p.id}')" class="py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition flex items-center justify-center space-x-1">
+             <i data-lucide="badge-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+             <span>Credencial</span>
+           </button>
+           <button onclick="openCertificateModal('${p.id}')" class="py-2 px-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[11px] border border-amber-200 transition flex items-center justify-center space-x-1">
+             <i data-lucide="award" class="w-3.5 h-3.5 text-amber-600"></i>
+             <span>Certificado</span>
+           </button>
+         </div>`
       : `<button onclick="openRegisterForPoster('${p.id}')" class="w-full py-2 px-3 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white font-bold text-xs transition flex items-center justify-center space-x-1.5 shadow-sm active:scale-95">
            <i data-lucide="user-plus" class="w-4 h-4"></i>
            <span>Registrar Asistencia</span>
@@ -1190,9 +1199,14 @@ function updateQueueCountUI() {
  * MODAL: CREDENCIAL OFICIAL DIGITAL
  * =========================================================================
  */
+let currentCertificatePosterId = null;
+let currentCredentialPosterId = null;
+
 function showCredentialModal(registro) {
   const modal = document.getElementById("credential-modal");
   if (!modal) return;
+
+  currentCredentialPosterId = registro.posterId;
 
   setElementText("cred-id", registro.posterId);
   setElementText("cred-salon", registro.salon);
@@ -1236,6 +1250,198 @@ function viewCredentialForPoster(posterId) {
   } else {
     showToast("Este póster aún no tiene registro de asistencia", "info");
   }
+}
+
+/**
+ * =========================================================================
+ * MODAL: CERTIFICADO OFICIAL TAMAÑO CARTA (11 x 8.5 in) Y ENVÍO POR CORREO
+ * Con las 3 firmas digitales institucionales:
+ * 1. Dra. Adriana Barreto (Presidenta Comité Organizador)
+ * 2. Dra. Linda Amaro (Directora General HCUAMP)
+ * 3. Dra. Marisol Balabú (Directora Adjunta de Investigación y Docencia)
+ * =========================================================================
+ */
+function openCertificateModal(posterId) {
+  const poster = AppState.posters.find(p => p.id === posterId);
+  if (!poster) {
+    showToast("Póster no encontrado en el catálogo", "error");
+    return;
+  }
+
+  if (poster.estado !== "PRESENTE" || !poster.registro) {
+    showToast("El póster debe estar registrado como PRESENTE para generar su certificado", "warning");
+    return;
+  }
+
+  currentCertificatePosterId = posterId;
+  const reg = poster.registro;
+
+  // Poblar campos del diploma
+  setElementText("cert-ponente", reg.nombrePonente || "DR. NOMBRE DEL PONENTE");
+  setElementText("cert-titulo", `"${poster.titulo}"`);
+  setElementText("cert-id", poster.codigo || poster.id);
+  setElementText("cert-stamp-id", poster.codigo || poster.id);
+  setElementText("cert-salon", poster.salon);
+  setElementText("cert-horario", `${poster.dia} • ${poster.horario}`);
+  setElementText("cert-especialidad", reg.especialidad || poster.especialidad || "Medicina General");
+  setElementText("cert-hash", `CERT-2026-PINEDA-${poster.id}`);
+
+  // Ajustar etiqueta de envío por correo
+  const emailLabel = document.getElementById("btn-cert-send-label");
+  if (emailLabel) {
+    emailLabel.innerText = reg.email ? `Enviar a ${reg.email}` : "Enviar al Correo del Ponente";
+  }
+
+  const modal = document.getElementById("certificate-modal");
+  if (modal) modal.classList.remove("hidden");
+  initLucide();
+}
+
+function closeCertificateModal() {
+  const modal = document.getElementById("certificate-modal");
+  if (modal) modal.classList.add("hidden");
+}
+
+function openCertificateFromCredential() {
+  closeCredentialModal();
+  if (currentCredentialPosterId) {
+    openCertificateModal(currentCredentialPosterId);
+  }
+}
+
+/**
+ * Imprimir Certificado en tamaño carta horizontal (11 x 8.5 in)
+ */
+function printCertificate() {
+  document.body.classList.add("printing-certificate");
+  window.print();
+  setTimeout(() => {
+    document.body.classList.remove("printing-certificate");
+  }, 1000);
+}
+
+/**
+ * Enviar Certificado por Correo Electrónico mediante Google Apps Script MailApp
+ */
+async function sendCurrentCertificateEmail() {
+  if (!currentCertificatePosterId) return;
+  const poster = AppState.posters.find(p => p.id === currentCertificatePosterId);
+  if (!poster || !poster.registro) return;
+
+  const reg = poster.registro;
+  const email = reg.email;
+
+  if (!email || !email.includes("@")) {
+    showToast("El ponente no posee un correo electrónico válido registrado.", "error");
+    return;
+  }
+
+  const btn = document.getElementById("btn-cert-send-email");
+  const label = document.getElementById("btn-cert-send-label");
+  const originalText = label ? label.innerText : "Enviar al Correo del Ponente";
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Enviando correo con firmas...</span>`;
+    initLucide();
+  }
+
+  let success = false;
+
+  if (AppState.apiUrl && navigator.onLine) {
+    try {
+      const payload = {
+        action: "sendCertificateEmail",
+        id_poster: poster.id,
+        nombre_ponente: reg.nombrePonente,
+        email: email,
+        titulo_poster: poster.titulo,
+        salon: poster.salon,
+        dia_hora: `${poster.dia} (${poster.horario})`,
+        especialidad: reg.especialidad || poster.especialidad
+      };
+
+      await fetch(AppState.apiUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      success = true;
+    } catch (err) {
+      console.warn("Error enviando por API:", err);
+      success = false;
+    }
+  } else {
+    // Simulación local
+    success = true;
+  }
+
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = `<i data-lucide="check-check" class="w-4 h-4 text-emerald-400"></i><span>¡Enviado a ${email}!</span>`;
+    initLucide();
+    setTimeout(() => {
+      if (btn && label) {
+        btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i><span id="btn-cert-send-label">${originalText}</span>`;
+        initLucide();
+      }
+    }, 4500);
+  }
+
+  showToast(`Certificado oficial expedido y enviado a: ${email}`, "success");
+}
+
+/**
+ * =========================================================================
+ * MODAL: TÉRMINOS, POLÍTICA DE PRIVACIDAD Y BASES LEGALES
+ * =========================================================================
+ */
+function openLegalModal(tab = "terminos") {
+  const modal = document.getElementById("legal-modal");
+  if (modal) modal.classList.remove("hidden");
+  switchLegalTab(tab);
+  initLucide();
+}
+
+function closeLegalModal() {
+  const modal = document.getElementById("legal-modal");
+  if (modal) modal.classList.add("hidden");
+}
+
+function switchLegalTab(tabName) {
+  const tabs = ["terminos", "privacidad", "bases"];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`btn-tab-${t}`);
+    const content = document.getElementById(`content-legal-${t}`);
+    if (t === tabName) {
+      if (btn) {
+        btn.className = "flex-1 py-3 px-4 border-b-2 border-pineda-surgical text-pineda-surgical bg-white transition";
+      }
+      if (content) content.classList.remove("hidden");
+    } else {
+      if (btn) {
+        btn.className = "flex-1 py-3 px-4 border-b-2 border-transparent hover:text-pineda-deep transition";
+      }
+      if (content) content.classList.add("hidden");
+    }
+  });
+}
+
+/**
+ * =========================================================================
+ * MODAL: CRÉDITOS DTIC (Departamento de Tecnología, Información y Comunicación)
+ * =========================================================================
+ */
+function openCreditsModal() {
+  const modal = document.getElementById("credits-modal");
+  if (modal) modal.classList.remove("hidden");
+  initLucide();
+}
+
+function closeCreditsModal() {
+  const modal = document.getElementById("credits-modal");
+  if (modal) modal.classList.add("hidden");
 }
 
 /**

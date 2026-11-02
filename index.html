@@ -799,6 +799,34 @@
 
     </section>
 
+    <!-- ==================== FOOTER INSTITUCIONAL ==================== -->
+    <footer class="mt-12 pt-8 pb-4 border-t border-slate-200/80 text-center space-y-3 no-print">
+      <div class="flex items-center justify-center space-x-2 text-xs font-semibold text-slate-700">
+        <i data-lucide="shield-check" class="w-4 h-4 text-pineda-deep"></i>
+        <span>Hospital Central Universitario "Dr. Antonio María Pineda" (HCUAMP)</span>
+      </div>
+      
+      <!-- Crédito Oficial DTIC -->
+      <p class="text-xs text-slate-600 max-w-2xl mx-auto font-medium">
+        Diseño y desarrollo tecnológico: <strong class="text-pineda-deep font-bold cursor-pointer hover:underline" onclick="openCreditsModal()">Departamento de Tecnología, Información y Comunicación (DTIC)</strong> del Hospital Central Universitario Dr. Antonio María Pineda.
+      </p>
+
+      <!-- Enlaces Legales y Éticos -->
+      <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-pineda-surgical font-semibold pt-1">
+        <button onclick="openLegalModal('terminos')" class="hover:underline">Términos de Uso</button>
+        <span class="text-slate-300">•</span>
+        <button onclick="openLegalModal('privacidad')" class="hover:underline">Política de Privacidad</button>
+        <span class="text-slate-300">•</span>
+        <button onclick="openLegalModal('bases')" class="hover:underline">Bases Legales y Ética Médica</button>
+        <span class="text-slate-300">•</span>
+        <button onclick="openCreditsModal()" class="hover:underline">Créditos DTIC</button>
+      </div>
+
+      <div class="text-[11px] text-slate-400 pt-2">
+        XIV Congreso Pineda • Barquisimeto, Estado Lara • Versión 1.2.0 PWA
+      </div>
+    </footer>
+
   </main>
 
   <!-- ==================== MODAL: CREDENCIAL OFICIAL DE ASISTENCIA ==================== -->
@@ -862,16 +890,307 @@
         </div>
 
         <!-- Botones de Acción -->
-        <div class="no-print pt-2 flex items-center space-x-2">
-          <button onclick="window.print()" class="flex-1 py-2.5 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow transition">
-            <i data-lucide="printer" class="w-4 h-4"></i>
-            <span>Imprimir Credencial</span>
-          </button>
-          <button onclick="closeCredentialModal()" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
-            <span>Cerrar</span>
+        <div class="no-print pt-2 space-y-2">
+          <div class="flex items-center space-x-2">
+            <button onclick="window.print()" class="flex-1 py-2.5 rounded-xl bg-pineda-deep hover:bg-pineda-navy text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow transition">
+              <i data-lucide="printer" class="w-4 h-4"></i>
+              <span>Imprimir Credencial</span>
+            </button>
+            <button onclick="closeCredentialModal()" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+              <span>Cerrar</span>
+            </button>
+          </div>
+          
+          <button onclick="openCertificateFromCredential()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-pineda-deep via-pineda-surgical to-pineda-teal text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow-md hover:shadow-lg transition">
+            <i data-lucide="award" class="w-4 h-4"></i>
+            <span>Ver y Enviar Certificado Oficial (11 x 8.5 in)</span>
           </button>
         </div>
 
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: CERTIFICADO OFICIAL DEL PARTICIPANTE (11 x 8.5 in) ==================== -->
+  <div id="certificate-modal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div class="max-w-5xl w-full my-auto space-y-3">
+      
+      <!-- Barra Superior de Controles (No imprimible) -->
+      <div class="no-print bg-slate-900/90 text-white p-3 sm:p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-xl border border-white/10">
+        <div class="flex items-center space-x-2 text-xs font-bold">
+          <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
+          <span>Certificado Oficial de Ponente • Formato Carta (11 x 8.5 pulgadas)</span>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <!-- Botón Enviar por Correo -->
+          <button id="btn-cert-send-email" onclick="sendCurrentCertificateEmail()" class="px-3.5 py-2 rounded-xl bg-pineda-surgical hover:bg-pineda-deep text-white text-xs font-bold transition flex items-center space-x-1.5 shadow active:scale-95">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span id="btn-cert-send-label">Enviar al Correo del Ponente</span>
+          </button>
+
+          <!-- Botón Imprimir / PDF -->
+          <button onclick="printCertificate()" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition flex items-center space-x-1.5 shadow active:scale-95">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Imprimir / Guardar PDF</span>
+          </button>
+
+          <!-- Cerrar -->
+          <button onclick="closeCertificateModal()" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- LIENZO DEL CERTIFICADO (11 x 8.5 in Landscape Aspect Ratio) -->
+      <div class="certificate-sheet mx-auto shadow-2xl rounded-xl overflow-hidden print-cert-container">
+        <div class="certificate-border-outer">
+          <div class="certificate-border-inner">
+            
+            <!-- Encabezado Institucional -->
+            <div class="text-center relative">
+              <div class="flex items-center justify-between px-6 pt-1">
+                <!-- Isotipo Izquierdo -->
+                <div class="w-16 h-16 rounded-xl bg-white p-1 shadow-sm border border-slate-200 flex items-center justify-center">
+                  <img src="assets/logo.png" alt="Logo HCUAMP" class="w-full h-full object-contain">
+                </div>
+
+                <div class="flex-1 text-center px-4">
+                  <p class="text-[9px] uppercase tracking-widest text-slate-500 font-bold">República Bolivariana de Venezuela • MPPS</p>
+                  <p class="text-[10px] uppercase tracking-wider text-pineda-deep font-extrabold">Hospital Central Universitario "Dr. Antonio María Pineda" (HCUAMP)</p>
+                  <h2 class="text-xl sm:text-2xl font-black text-pineda-deep tracking-tight mt-0.5">XIV CONGRESO PINEDA</h2>
+                  <p class="text-[11px] font-bold text-pineda-teal">Jornada Científica de Evaluación de E-Pósters • Año 2026</p>
+                </div>
+
+                <!-- Isotipo Derecho (Sello Holográfico / QR) -->
+                <div class="w-16 h-16 rounded-xl bg-slate-50 border border-slate-200 p-1 flex flex-col items-center justify-center text-center">
+                  <i data-lucide="qr-code" class="w-8 h-8 text-pineda-deep"></i>
+                  <span class="text-[7px] font-mono font-bold text-slate-400 mt-0.5" id="cert-stamp-id">P-01</span>
+                </div>
+              </div>
+
+              <!-- Lema de Otorgamiento -->
+              <div class="mt-4">
+                <span class="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-pineda-navy via-pineda-deep to-pineda-surgical text-white text-[11px] font-bold tracking-widest uppercase shadow-sm">
+                  CERTIFICADO OFICIAL DE PARTICIPACIÓN
+                </span>
+                <p class="text-xs text-slate-500 italic mt-2">
+                  El Comité Organizador y la Dirección del Hospital Central Universitario "Dr. Antonio María Pineda" certifican que:
+                </p>
+              </div>
+            </div>
+
+            <!-- Nombre del Ponente -->
+            <div class="text-center my-2">
+              <div id="cert-ponente" class="text-2xl sm:text-3xl font-black text-pineda-deep tracking-wide uppercase border-b-2 border-slate-200 max-w-xl mx-auto pb-1.5">
+                DR. NOMBRE DEL PONENTE
+              </div>
+              <p class="text-xs text-slate-600 mt-2 max-w-2xl mx-auto leading-relaxed">
+                Ha participado con éxito en calidad de <strong class="text-pineda-deep">PONENTE OFICIAL</strong> con la defensa del trabajo de investigación científica titulado:
+              </p>
+            </div>
+
+            <!-- Título del Póster -->
+            <div class="text-center bg-slate-50/80 border border-slate-200/80 rounded-xl p-3 max-w-3xl mx-auto w-full">
+              <h4 id="cert-titulo" class="text-xs sm:text-sm font-bold text-slate-900 italic leading-snug">
+                "Título oficial del trabajo científico en defensa de E-Póster..."
+              </h4>
+              <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-slate-600 font-semibold mt-2 pt-1 border-t border-slate-200">
+                <span>Póster: <strong id="cert-id" class="text-pineda-deep font-mono">P-01</strong></span>
+                <span>•</span>
+                <span>Salón: <strong id="cert-salon">Salón 1</strong></span>
+                <span>•</span>
+                <span>Sesión: <strong id="cert-horario">11:00 AM – 11:15 AM</strong></span>
+                <span>•</span>
+                <span>Área: <strong id="cert-especialidad" class="text-pineda-teal">Especialidad Médica</strong></span>
+              </div>
+            </div>
+
+            <!-- 3 FIRMAS DIGITALES INSTITUCIONALES -->
+            <div class="pt-4 border-t border-slate-200">
+              <div class="grid grid-cols-3 gap-4 text-center">
+                
+                <!-- Firma 1: Dra. Adriana Barreto -->
+                <div class="space-y-1">
+                  <div class="signature-font text-xl sm:text-2xl text-pineda-deep leading-none pb-1 select-none">
+                    Adriana Barreto
+                  </div>
+                  <div class="w-3/4 mx-auto border-t-2 border-pineda-deep"></div>
+                  <h5 class="text-xs font-bold text-slate-900 leading-tight">Dra. Adriana Barreto</h5>
+                  <p class="text-[10px] text-slate-500 leading-tight">
+                    Presidenta del Comité Organizador<br>XIV Congreso Pineda Año 2026
+                  </p>
+                </div>
+
+                <!-- Firma 2: Dra. Linda Amaro -->
+                <div class="space-y-1">
+                  <div class="signature-font text-xl sm:text-2xl text-pineda-deep leading-none pb-1 select-none">
+                    Linda Amaro
+                  </div>
+                  <div class="w-3/4 mx-auto border-t-2 border-pineda-deep"></div>
+                  <h5 class="text-xs font-bold text-slate-900 leading-tight">Dra. Linda Amaro</h5>
+                  <p class="text-[10px] text-slate-500 leading-tight">
+                    Directora General<br>HCU "Dr. Antonio María Pineda"
+                  </p>
+                </div>
+
+                <!-- Firma 3: Dra. Marisol Balabú -->
+                <div class="space-y-1">
+                  <div class="signature-font text-xl sm:text-2xl text-pineda-deep leading-none pb-1 select-none">
+                    Marisol Balabú
+                  </div>
+                  <div class="w-3/4 mx-auto border-t-2 border-pineda-deep"></div>
+                  <h5 class="text-xs font-bold text-slate-900 leading-tight">Dra. Marisol Balabú</h5>
+                  <p class="text-[10px] text-slate-500 leading-tight">
+                    Directora Adjunta de Investigación y Docencia<br>HCU "Dr. Antonio María Pineda"
+                  </p>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Pie de Certificado & Validación -->
+            <div class="pt-2 text-center text-[9px] text-slate-400 flex items-center justify-between border-t border-slate-100">
+              <span>Barquisimeto, Estado Lara • Noviembre 2026</span>
+              <span id="cert-hash" class="font-mono font-semibold text-slate-500">CERT-2026-PINEDA-0001</span>
+              <span>Validación Oficial DTIC - HCUAMP</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: TÉRMINOS, POLÍTICA DE PRIVACIDAD Y BASES LEGALES ==================== -->
+  <div id="legal-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
+      
+      <!-- Header Legal -->
+      <div class="bg-pineda-deep text-white p-5 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+            <i data-lucide="scale" class="w-5 h-5 text-pineda-turquoise"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">Marco Normativo, Legal y Privacidad</h3>
+            <p class="text-xs text-white/80">XIV Congreso Pineda • HCU "Dr. Antonio María Pineda"</p>
+          </div>
+        </div>
+        <button onclick="closeLegalModal()" class="text-white/70 hover:text-white p-1 rounded-full bg-white/10">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Selector de Pestañas Legales -->
+      <div class="flex border-b border-slate-200 bg-slate-50 text-xs font-bold text-slate-600">
+        <button onclick="switchLegalTab('terminos')" id="btn-tab-terminos" class="flex-1 py-3 px-4 border-b-2 border-pineda-surgical text-pineda-surgical bg-white transition">
+          Términos de Uso
+        </button>
+        <button onclick="switchLegalTab('privacidad')" id="btn-tab-privacidad" class="flex-1 py-3 px-4 border-b-2 border-transparent hover:text-pineda-deep transition">
+          Política de Privacidad
+        </button>
+        <button onclick="switchLegalTab('bases')" id="btn-tab-bases" class="flex-1 py-3 px-4 border-b-2 border-transparent hover:text-pineda-deep transition">
+          Bases Legales y Ética Médica
+        </button>
+      </div>
+
+      <!-- Contenido de las Pestañas -->
+      <div class="p-6 overflow-y-auto space-y-4 text-xs text-slate-700 leading-relaxed flex-1">
+        
+        <!-- Pestaña 1: Términos de Uso -->
+        <div id="content-legal-terminos" class="space-y-3">
+          <h4 class="text-sm font-bold text-slate-900 text-pineda-deep">1. Aceptación y Ámbito de Aplicación</h4>
+          <p>El uso de esta Progressive Web App (PWA) está destinado exclusivamente a evaluadores, miembros del Comité Organizador, coordinadores de sala y ponentes acreditados del "XIV Congreso Pineda - Jornada Científica de Evaluación de E-Pósters" del Hospital Central Universitario "Dr. Antonio María Pineda" (HCUAMP).</p>
+          
+          <h4 class="text-sm font-bold text-slate-900 text-pineda-deep">2. Registro de Asistencia y Aforo</h4>
+          <p>El registro de presencia en sala constituye una declaración fidedigna de asistencia y defensa del trabajo científico. Cada trabajo admite únicamente un ponente titular y un máximo de dos (2) acompañantes con el fin de salvaguardar el aforo preventivo de bioseguridad y control de quórum de las salas de conferencias.</p>
+
+          <h4 class="text-sm font-bold text-slate-900 text-pineda-deep">3. Prohibición de Alteración y Concurrencia</h4>
+          <p>Queda estrictamente prohibida la manipulación intencional de registros, la duplicación maliciosa o la suplantación de identidad en la acreditación de ponentes. El sistema cuenta con mecanismos de bloqueo de concurrencia y auditoría criptográfica.</p>
+        </div>
+
+        <!-- Pestaña 2: Política de Privacidad -->
+        <div id="content-legal-privacidad" class="hidden space-y-3">
+          <h4 class="text-sm font-bold text-slate-900 text-pineda-deep">1. Recolección de Datos Personales</h4>
+          <p>Se recopilan únicamente los datos estrictamente necesarios para la acreditación académica y certificación: Nombre completo, número de cédula/documento de identidad, especialidad médica, número de teléfono/WhatsApp y correo electrónico institucional o personal.</p>
+
+          <h4 class="text-sm font-bold text-slate-900 text-pineda-deep">2. Finalidad del Tratamiento de Datos</h4>
+          <p>Los datos registrados se emplean de manera exclusiva para: (a) Control de quórum en sala; (b) Generación y emisión automática del Certificado Oficial de Ponente; (c) Elaboración de estadísticas epidemiológicas y académicas sin divulgación de datos confidenciales.</p>
+
+          <h4 class="text-sm font-bold text-slate-900 text-pineda-deep">3. Confidencialidad y No Transferencia</h4>
+          <p>Bajo ninguna circunstancia los datos suministrados serán cedidos, comercializados o transferidos a terceros. La base de datos reposa bajo la custodia técnica del Departamento de Tecnología, Información y Comunicación (DTIC) del HCUAMP.</p>
+        </div>
+
+        <!-- Pestaña 3: Bases Legales y Ética Médica -->
+        <div id="content-legal-bases" class="hidden space-y-3">
+          <h4 class="text-sm font-bold text-slate-900 text-pineda-deep">1. Fundamento Constitucional y Sanitario</h4>
+          <p>Las presentes bases se sustentan en los Artículos 83 y 84 de la Constitución de la República Bolivariana de Venezuela, la Ley Orgánica de Salud, y las directrices de docencia e investigación médica del Ministerio del Poder Popular para la Salud (MPPS).</p>
+
+          <h4 class="text-sm font-bold text-slate-900 text-pineda-deep">2. Deontología Médica y Declaración de Helsinki</h4>
+          <p>Todos los trabajos científicos presentados en modalidad E-Póster cumplen con el Código de Deontología Médica de la Federación Médica Venezolana y los principios éticos internacionales de la Declaración de Helsinki para la investigación médica en seres humanos, garantizando el anonimato y consentimiento informado de pacientes en casos clínicos.</p>
+
+          <h4 class="text-sm font-bold text-slate-900 text-pineda-deep">3. Validez de Mensajes de Datos y Firmas Electrónicas</h4>
+          <p>Conforme a la Ley sobre Mensajes de Datos y Firmas Electrónicas de la República Bolivariana de Venezuela, los certificados digitales emitidos por este sistema institucional gozan de plena validez probatoria, autenticidad e integridad respaldada por las autoridades académicas del HCUAMP.</p>
+        </div>
+
+      </div>
+
+      <!-- Footer Modal -->
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <button onclick="closeLegalModal()" class="px-5 py-2 rounded-xl bg-pineda-deep text-white text-xs font-bold hover:bg-pineda-navy transition">
+          Entendido y Conforme
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: CRÉDITOS INSTITUCIONALES DTIC ==================== -->
+  <div id="credits-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in duration-200">
+      
+      <div class="bg-gradient-to-br from-pineda-navy via-pineda-deep to-pineda-surgical text-white p-6 text-center">
+        <div class="w-14 h-14 mx-auto bg-white p-1 rounded-2xl shadow-lg mb-3">
+          <img src="assets/logo.png" alt="Logo" class="w-full h-full object-contain">
+        </div>
+        <p class="text-[10px] uppercase tracking-widest text-pineda-turquoise font-bold">República Bolivariana de Venezuela • MPPS</p>
+        <h3 class="text-lg font-black text-white">Hospital Central Universitario "Dr. Antonio María Pineda"</h3>
+        <p class="text-xs text-white/80 mt-1">Departamento de Tecnología, Información y Comunicación (DTIC)</p>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs text-slate-700 leading-relaxed">
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-2">
+          <span class="font-bold text-pineda-deep text-sm block">Arquitectura y Desarrollo de la Solución</span>
+          <p>Esta Progressive Web App fue diseñada y desarrollada por el equipo del <strong>Departamento de Tecnología, Información y Comunicación (DTIC)</strong> para optimizar la gestión en tiempo real, el aforo hospitalario y la certificación digital del <strong>XIV Congreso Pineda 2026</strong>.</p>
+        </div>
+
+        <div class="space-y-2 text-[11px] text-slate-600">
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="font-bold text-slate-700">Dirección General:</span>
+            <span>Dra. Linda Amaro</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="font-bold text-slate-700">Comité Organizador:</span>
+            <span>Dra. Adriana Barreto</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="font-bold text-slate-700">Investigación y Docencia:</span>
+            <span>Dra. Marisol Balabú</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="font-bold text-slate-700">Unidad Responsable:</span>
+            <span class="font-semibold text-pineda-deep">DTIC - HCUAMP</span>
+          </div>
+        </div>
+
+        <div class="pt-2 text-center">
+          <button onclick="closeCreditsModal()" class="w-full py-2.5 rounded-xl bg-pineda-deep text-white text-xs font-bold hover:bg-pineda-navy transition shadow">
+            Cerrar Créditos
+          </button>
+        </div>
       </div>
 
     </div>

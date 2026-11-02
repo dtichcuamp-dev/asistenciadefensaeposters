@@ -98,19 +98,92 @@ body {
   opacity: 1;
 }
 
-/* Estilos de impresión para la Credencial de Asistencia */
+/* ==========================================================================
+   ESTILOS DEL CERTIFICADO OFICIAL TAMAÑO CARTA (11 x 8.5 in)
+   ========================================================================== */
+.certificate-sheet {
+  width: 100%;
+  max-width: 1056px; /* 11 in a 96 DPI */
+  aspect-ratio: 11 / 8.5;
+  background: #FFFFFF;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.certificate-border-outer {
+  border: 8px solid #004C87;
+  padding: 6px;
+  height: 100%;
+  box-sizing: border-box;
+  background: #FCFDFE;
+  position: relative;
+}
+
+.certificate-border-inner {
+  border: 2px solid #C5A059; /* Oro Institucional */
+  padding: 24px 36px;
+  height: 100%;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Firmas digitales estilizadas */
+.signature-font {
+  font-family: 'Brush Script MT', 'Dancing Script', cursive, serif;
+}
+
+/* Estilos de impresión para Certificado (11 x 8.5 in) y Credenciales */
+@page {
+  size: 11in 8.5in landscape;
+  margin: 0;
+}
+
 @media print {
-  body {
+  html, body {
+    width: 11in !important;
+    height: 8.5in !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #FFFFFF !important;
-    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   
-  header, nav, .glass-bottom-bar, .no-print, #notification-container {
+  header, nav, .glass-bottom-bar, .no-print, #toast-container, #offline-banner, main {
     display: none !important;
   }
   
-  .print-only {
-    display: block !important;
+  body.printing-certificate #certificate-modal {
+    display: flex !important;
+    position: fixed !important;
+    inset: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  body.printing-certificate .certificate-sheet {
+    max-width: 11in !important;
+    width: 11in !important;
+    height: 8.5in !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  body.printing-credential #credential-modal {
+    display: flex !important;
+    position: fixed !important;
+    inset: 0 !important;
+    padding: 0 !important;
+    background: #FFFFFF !important;
   }
 
   .print-card {
@@ -118,6 +191,6 @@ body {
     box-shadow: none !important;
     page-break-inside: avoid;
     max-width: 600px;
-    margin: 0 auto;
+    margin: auto auto;
   }
 }
